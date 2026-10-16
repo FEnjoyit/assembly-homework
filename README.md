@@ -4,14 +4,14 @@
 
 | 作业 | 内容 | 报告 | 源码 | EXE |
 | --- | --- | --- | --- | --- |
-| [作业1](homework1/) | Hello world：传统汇编链接、DEBUG 反汇编、直接写内存执行、程序结构与寄存器 | [Markdown](homework1/作业1_报告.md) · [PDF](homework1/作业1_报告.pdf) | [src](homework1/src/) | [bin](homework1/bin/) |
+| [作业1](homework1/) | Hello world：传统汇编链接、DEBUG 反汇编、直接写内存执行、程序结构与寄存器 | [Markdown](homework1/作业1_报告.md) | [src](homework1/src/) | [bin](homework1/bin/) |
 | [作业2](homework2/) | a–z 字母表，每行13个：LOOP、条件跳转、C 实现及真实反汇编注释 | [Markdown](homework2/作业2_报告.md) | [src](homework2/src/) | [bin](homework2/bin/) |
 
 ## 运行环境
 
 目标为 **8086 指令、16 位 DOS**，在 DOSBox-X 中运行。汇编工具为 MASM 5.00 / LINK 3.60，调试器为 FreeDOS DEBUG 2.50；作业2的 C 版本使用 Open Watcom C16。版本、配置和安装方式见 [环境说明](environment/README.md)。
 
-源码与老师要求的 `.EXE` 均已提交。16 位 EXE 在 DOSBox 内运行。仓库中的报告记录了实验机的实际路径、段地址和操作；在其他机器上，挂载路径和运行时段地址按实际情况确定。
+各次作业包含源码、16 位 DOS EXE 和 Markdown 报告。EXE 在 DOSBox 内运行；挂载路径和运行时段地址按实际环境确定。
 
 以作业1为例，在 DOSBox 中把下载的 `homework1` 文件夹挂载为 D 盘：
 
@@ -33,7 +33,6 @@ homework1/          第一次作业
   bin/             链接后的 EXE
   logs/            真实汇编、链接、DEBUG 输出及 LST/MAP
   作业1_报告.md
-  作业1_报告.pdf
 homework2/          第二次作业
   src/             两份 ASM、一份 C 和 DOS 批处理
   bin/             三份 DOS EXE

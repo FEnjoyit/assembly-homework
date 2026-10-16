@@ -1,6 +1,6 @@
 # 作业1：Hello world
 
-- [实验报告](作业1_报告.md) · [可直接阅读的 PDF](作业1_报告.pdf)
+- [实验报告](作业1_报告.md)
 - [src/A1LEA.ASM](src/A1LEA.ASM) → [bin/A1LEA.EXE](bin/A1LEA.EXE)：传统 LEA 版本。
 - [src/A1OFF.ASM](src/A1OFF.ASM) → [bin/A1OFF.EXE](bin/A1OFF.EXE)：传统 MOV OFFSET 版本。
 - [src/A1MEM.DBG](src/A1MEM.DBG)：DEBUG e 直接写代码和数据，再执行。

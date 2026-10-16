@@ -10,7 +10,7 @@
 | DEBUG | FreeDOS 2.50 | `e` 写内存、`u` 反汇编、`r` 看寄存器、`t` 单步、`g` 执行 |
 | Open Watcom C16 / WDIS | 2.0beta1 LA | 作业2的 8086 DOS C 编译与反汇编 |
 
-MASM/LINK 使用课程提供的软件包。本仓库包含作业程序，不包含课程工具安装包或讲义 PDF。安装 DOSBox-X 后，将课程工具目录挂载为工具盘并加入 DOS PATH，再按根目录 README 挂载单次作业目录。
+MASM/LINK 使用课程提供的软件包。安装 DOSBox-X 后，将课程工具目录挂载为工具盘并加入 DOS PATH，再按根目录 README 挂载单次作业目录。
 
 ```text
 mount c "C:\path\to\course-tools"
@@ -21,7 +21,7 @@ bin\a1lea
 debug < src\a1mem.dbg
 ```
 
-其中 `course-tools\bin` 应含 MASM.EXE、LINK.EXE、DEBUG.COM。用户将工具放在别的位置时，相应调整工具盘路径。进入 `src` 后可以逐行汇编、链接：
+其中 `course-tools\bin` 应含 MASM.EXE、LINK.EXE、DEBUG.COM。工具目录不同时，相应调整挂载路径。进入 `src` 后可以逐行汇编、链接：
 
 ```text
 cd \src
@@ -35,7 +35,7 @@ q
 
 程序运行前要确认汇编链接成功，避免误运行旧 EXE。DEBUG 输入的数字按十六进制解释；`tm 1` 使用本实验的中断跟踪模式。DEBUG.COM 是调试器本身的文件格式，可以调试 EXE。
 
-本机课件中的固定段值属于截图示例，重新运行时以寄存器显示为准。作业1的直接写内存方案以当前 CS 为基准，避免依赖截图中的固定段地址。
+运行时段地址以寄存器显示为准。作业1的直接写内存方案以当前 CS 为基准。
 
 作业2 C 的实际编译和反汇编命令：
 
