@@ -1,0 +1,100 @@
+Microsoft (R) Macro Assembler Version 5.00                  10/9/26 19:45:29
+                                                             Page     1-1
+
+
+				; Assignment 2, part 1: lowercase ASCII, 13 let
+				ters per line. 
+				; MASM 5.0, 8086, 16-bit DOS. Save as ASCII or 
+				GBK without BOM. 
+				; Both row and column loops use LOOP. PUSH/POP 
+				preserve outer CX. 
+				 
+ 0000				STACKSEG SEGMENT STACK 
+ 0000  0080[			    DW 128 DUP (?) 
+	   ????			
+			 ]	
+				
+ 0100				STACKSEG ENDS 
+				 
+ 0000				CODESEG SEGMENT 
+				    ASSUME CS:CODESEG, SS:STACKSEG 
+ 0000				START: 
+ 0000  B3 61			    MOV BL, 'a'             ; BL = next lowerca
+				se ASCII character. 
+ 0002  B9 0002			    MOV CX, 2               ; Outer loop: two r
+				ows. 
+ 0005				ROW_LOOP: 
+ 0005  51			    PUSH CX                 ; Save the outer co
+				unter before reusing CX. 
+ 0006  B9 000D			    MOV CX, 13              ; Inner loop: thirt
+				een letters in this row. 
+ 0009				COL_LOOP: 
+ 0009  8A D3			    MOV DL, BL 
+ 000B  B4 02			    MOV AH, 02H             ; DOS function 02H:
+				 print character in DL. 
+ 000D  CD 21			    INT 21H 
+ 000F  FE C3			    INC BL                  ; Next ASCII letter
+				, a through z. 
+ 0011  83 F9 01			    CMP CX, 1               ; The last letter n
+				eeds no following space. 
+ 0014  74 06			    JE ROW_END              ; Formatting only; 
+				not a loop-control jump. 
+ 0016  B2 20			    MOV DL, ' ' 
+ 0018  B4 02			    MOV AH, 02H 
+ 001A  CD 21			    INT 21H 
+ 001C				ROW_END: 
+ 001C  E2 EB			    LOOP COL_LOOP           ; CX = CX - 1; repe
+				at while CX is nonzero. 
+ 001E  B2 0D			    MOV DL, 0DH             ; DOS line ending: 
+				CR followed by LF. 
+ 0020  B4 02			    MOV AH, 02H 
+ 0022  CD 21			    INT 21H 
+ 0024  B2 0A			    MOV DL, 0AH 
+ 0026  B4 02			    MOV AH, 02H 
+ 0028  CD 21			    INT 21H 
+ 002A  59			    POP CX                  ; Restore the outer
+				 counter (2, then 1). 
+ 002B  E2 D8			    LOOP ROW_LOOP           ; Next row; stops a
+				fter exactly two rows. 
+Microsoft (R) Macro Assembler Version 5.00                  10/9/26 19:45:29
+                                                             Page     1-2
+
+
+ 002D  B8 4C00			    MOV AX, 4C00H           ; Return to DOS wit
+				h exit code zero. 
+ 0030  CD 21			    INT 21H 
+ 0032				CODESEG ENDS 
+				END START 
+Microsoft (R) Macro Assembler Version 5.00                  10/9/26 19:45:29
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODESEG  . . . . . . . . . . . .  	0032	PARA	NONE	
+STACKSEG . . . . . . . . . . . .  	0100	PARA	STACK	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+COL_LOOP . . . . . . . . . . . .  	L NEAR	0009	CODESEG
+
+ROW_END  . . . . . . . . . . . .  	L NEAR	001C	CODESEG
+ROW_LOOP . . . . . . . . . . . .  	L NEAR	0005	CODESEG
+
+START  . . . . . . . . . . . . .  	L NEAR	0000	CODESEG
+
+@FILENAME  . . . . . . . . . . .  	TEXT  A2LOOP		
+
+
+     40 Source  Lines
+     40 Total   Lines
+      8 Symbols
+
+  51110 + 438778 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

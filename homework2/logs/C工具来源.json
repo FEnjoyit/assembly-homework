@@ -1,0 +1,17 @@
+{
+  "download_url": "https://openwatcom.org/ftp/source/ow_portable_v2_stable.zip",
+  "archive_sha256": "46b7ed4298a76af7cf9206ae0842a043979c24515d0a8f805a1d1b5b24c3a0f3",
+  "actual_version": "Open Watcom C16 / WCL / WDIS 2.0beta1 LA",
+  "installed_path": "D:\\Homework\\6\\HUI\\tools\\watcom",
+  "compiler_options": [
+    "-0",
+    "-ms",
+    "-bt=dos",
+    "-l=dos",
+    "-od",
+    "-d2",
+    "-s",
+    "-w=4",
+    "-we"
+  ]
+}

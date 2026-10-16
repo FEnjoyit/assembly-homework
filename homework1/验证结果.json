@@ -1,0 +1,47 @@
+{
+  "verified_at": "2026-10-16T18:39:30.550696+08:00",
+  "status": "PASS",
+  "passed": 23,
+  "total": 23,
+  "environment": {
+    "emulator": "DOSBox-X 2026.10.01",
+    "assembler": "MASM 5.00",
+    "linker": "Microsoft LINK 3.60",
+    "debugger": "FreeDOS DEBUG 2.50"
+  },
+  "conventional_output": "Hello world!\r\n",
+  "direct_memory_method": "DEBUG E writes machine code at CS:0100 and data at CS:0200; G executes it.",
+  "checks": {
+    "dosbox_exit_zero": true,
+    "batch_completed": true,
+    "A1LEA_assembler_zero_errors_and_warnings": true,
+    "A1LEA_linker_no_errors": true,
+    "A1LEA_exact_output": true,
+    "A1LEA_mz_executable": true,
+    "A1LEA_actual_address_instruction": true,
+    "A1LEA_debug_data_and_registers": true,
+    "A1LEA_debug_output_and_exit": true,
+    "A1OFF_assembler_zero_errors_and_warnings": true,
+    "A1OFF_linker_no_errors": true,
+    "A1OFF_exact_output": true,
+    "A1OFF_mz_executable": true,
+    "A1OFF_actual_address_instruction": true,
+    "A1OFF_debug_data_and_registers": true,
+    "A1OFF_debug_output_and_exit": true,
+    "direct_memory_code_bytes_present": true,
+    "direct_memory_code_disassembled": true,
+    "direct_memory_data_bytes_present": true,
+    "direct_memory_ds_equals_cs_and_dx_0200": true,
+    "direct_memory_output_and_exit": true,
+    "delivered_debug_script_runs": true,
+    "debug_no_command_errors": true
+  },
+  "sha256": {
+    "dos\\work\\A1LEA.ASM": "72f0b72b3ea9f0af0d3196a107ec570f220866d84d47ac2a5dabcca73bbb140d",
+    "dos\\work\\A1LEA.EXE": "c88907da22f7227549cc9d86e400a5d84bd1ae9f00bb98a21aa59113650c7d68",
+    "dos\\work\\A1MEM.DBG": "db4b943e7ce3347aa5084b616c7dca9af000a22e5bc9268ae6dcba288b50506e",
+    "dos\\work\\A1OFF.ASM": "f280b4c74f247c85fb50c3f2e76dda324c38d2348943c08d60aea081e77e06c0",
+    "dos\\work\\A1OFF.EXE": "115d32cecede3ec0a999f7bde972da2f37e92494bb50692b0603a2683684b94e",
+    "dosbox-course.conf": "87ecc899ecc7b42d414bc485afc01342804fa678868d2f875d990c5d2dc53097"
+  }
+}

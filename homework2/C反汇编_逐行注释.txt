@@ -1,0 +1,46 @@
+C 版本反汇编逐行注释
+
+来源：真实 A2C.EXE 在 DEBUG 中执行 u cs:10 l5d 的输出。
+左列是 CS 段内偏移地址，中列为实际机器码，随后是反汇编指令和中文注释。
+本次 main_ 位于 CS:0010，putchar_ 位于 CS:006D，main 长 005DH = 93 字节。
+段基址随 DOS 装载变化，故只保留固定偏移；原始带段地址记录见编译与调试记录/A2CDIS.OUT。
+变量对应：ch=[BP-02]，col=[BP-04]，row=[BP-06]，返回值临时槽=[BP-08]。
+
+0010  53           PUSH    BX                           ; 保存调用者的 BX 寄存器。
+0011  51           PUSH    CX                           ; 保存 CX 寄存器。
+0012  52           PUSH    DX                           ; 保存 DX 寄存器。
+0013  56           PUSH    SI                           ; 保存 SI 寄存器。
+0014  57           PUSH    DI                           ; 保存 DI 寄存器。
+0015  55           PUSH    BP                           ; 保存原 BP，以便建立并最终恢复栈帧。
+0016  89E5         MOV     BP,SP                        ; 以 BP 定位栈帧中的局部变量。
+0018  81EC0800     SUB     SP,0008                      ; 在栈上分配 8 字节，存放三个 int 变量及返回值临时槽。
+001C  C746FE6100   MOV     WORD PTR [BP-02],0061        ; ch = 0061H，即十进制 97，对应小写字母 'a'。
+0021  C746FA0000   MOV     WORD PTR [BP-06],0000        ; row = 0，初始化外层 for 的行计数。
+0026  837EFA02     CMP     WORD PTR [BP-06],+02         ; 比较 row 与 2；row 在 [BP-06] 中。
+002A  7D30         JGE     005C                         ; row >= 2 时跳到 005C，结束外层循环并准备返回。
+002C  C746FC0000   MOV     WORD PTR [BP-04],0000        ; col = 0，每进入新一行都重新初始化列计数。
+0031  837EFC0D     CMP     WORD PTR [BP-04],+0D         ; 比较 col 与 000DH，即十进制 13。
+0035  7D1A         JGE     0051                         ; col >= 13 时跳到 0051，结束本行并输出换行。
+0037  8B46FE       MOV     AX,[BP-02]                   ; 把 ch 装入 AX，作为本工具链 putchar 的参数。
+003A  E83000       CALL    006D                         ; 调用 006D 处的 putchar_，输出当前小写字母。
+003D  FF46FE       INC     WORD PTR [BP-02]             ; ++ch，将字符编码递增 1。
+0040  837EFC0C     CMP     WORD PTR [BP-04],+0C         ; 比较 col 与 000CH，即十进制 12。
+0044  7D06         JGE     004C                         ; col >= 12 时跳过空格，避免在每行最后一个字母后多输出空格。
+0046  B82000       MOV     AX,0020                      ; AX = 0020H，即空格的 ASCII 编码。
+0049  E82100       CALL    006D                         ; 调用 putchar_，输出字母之间的分隔空格。
+004C  FF46FC       INC     WORD PTR [BP-04]             ; ++col，将本行列计数递增 1。
+004F  EBE0         JMP     0031                         ; 跳回 0031，继续检查内层 for 的循环条件。
+0051  B80A00       MOV     AX,000A                      ; AX = 000AH，即 C 源码中的换行符。
+0054  E81600       CALL    006D                         ; 调用 putchar_ 输出换行；DOS 文本运行库产生 CR/LF 行结束。
+0057  FF46FA       INC     WORD PTR [BP-06]             ; ++row，将行计数递增 1。
+005A  EBCA         JMP     0026                         ; 跳回 0026，继续检查外层 for 的循环条件。
+005C  C746F80000   MOV     WORD PTR [BP-08],0000        ; 把返回值临时槽 [BP-08] 置为 0，对应 return 0。
+0061  8B46F8       MOV     AX,[BP-08]                   ; 把返回值装入 AX；16 位 int 返回值放在 AX 中。
+0064  89EC         MOV     SP,BP                        ; 恢复 SP，释放 main 在栈上分配的局部变量空间。
+0066  5D           POP     BP                           ; 恢复原 BP。
+0067  5F           POP     DI                           ; 恢复 DI。
+0068  5E           POP     SI                           ; 恢复 SI。
+0069  5A           POP     DX                           ; 恢复 DX。
+006A  59           POP     CX                           ; 恢复 CX。
+006B  5B           POP     BX                           ; 恢复 BX。
+006C  C3           RET                                  ; 返回 C 运行库的调用者，由运行库完成程序退出。

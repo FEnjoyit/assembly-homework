@@ -1,0 +1,89 @@
+Microsoft (R) Macro Assembler Version 5.00                  10/9/26 19:45:29
+                                                             Page     1-1
+
+
+				; Assignment 2, part 2: the same output using c
+				onditional jumps. 
+				; MASM 5.0, 8086, 16-bit DOS. No LOOP instructi
+				on is used. 
+				 
+ 0000				STACKSEG SEGMENT STACK 
+ 0000  0080[			    DW 128 DUP (?) 
+	   ????			
+			 ]	
+				
+ 0100				STACKSEG ENDS 
+				 
+ 0000				CODESEG SEGMENT 
+				    ASSUME CS:CODESEG, SS:STACKSEG 
+ 0000				START: 
+ 0000  B3 61			    MOV BL, 'a'             ; ASCII 61H, the fi
+				rst lowercase letter. 
+ 0002  BE 0002			    MOV SI, 2               ; SI counts the two
+				 rows. 
+ 0005				ROW_LOOP: 
+ 0005  BF 000D			    MOV DI, 13              ; DI counts thirtee
+				n letters in each row. 
+ 0008				COL_LOOP: 
+ 0008  8A D3			    MOV DL, BL 
+ 000A  B4 02			    MOV AH, 02H 
+ 000C  CD 21			    INT 21H                 ; Print the current
+				 letter. 
+ 000E  FE C3			    INC BL 
+ 0010  83 FF 01			    CMP DI, 1 
+ 0013  74 06			    JE ROW_END              ; Skip the space af
+				ter the last letter. 
+ 0015  B2 20			    MOV DL, ' ' 
+ 0017  B4 02			    MOV AH, 02H 
+ 0019  CD 21			    INT 21H 
+ 001B				ROW_END: 
+ 001B  4F			    DEC DI                  ; DEC sets ZF accor
+				ding to the new count. 
+ 001C  75 EA			    JNZ COL_LOOP            ; ZF = 0 means more
+				 columns remain. 
+ 001E  B2 0D			    MOV DL, 0DH 
+ 0020  B4 02			    MOV AH, 02H 
+ 0022  CD 21			    INT 21H 
+ 0024  B2 0A			    MOV DL, 0AH 
+ 0026  B4 02			    MOV AH, 02H 
+ 0028  CD 21			    INT 21H 
+ 002A  4E			    DEC SI 
+ 002B  75 D8			    JNZ ROW_LOOP            ; Repeat while more
+				 rows remain. 
+ 002D  B8 4C00			    MOV AX, 4C00H 
+ 0030  CD 21			    INT 21H 
+ 0032				CODESEG ENDS 
+				END START 
+Microsoft (R) Macro Assembler Version 5.00                  10/9/26 19:45:29
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODESEG  . . . . . . . . . . . .  	0032	PARA	NONE	
+STACKSEG . . . . . . . . . . . .  	0100	PARA	STACK	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+COL_LOOP . . . . . . . . . . . .  	L NEAR	0008	CODESEG
+
+ROW_END  . . . . . . . . . . . .  	L NEAR	001B	CODESEG
+ROW_LOOP . . . . . . . . . . . .  	L NEAR	0005	CODESEG
+
+START  . . . . . . . . . . . . .  	L NEAR	0000	CODESEG
+
+@FILENAME  . . . . . . . . . . .  	TEXT  A2JUMP		
+
+
+     39 Source  Lines
+     39 Total   Lines
+      8 Symbols
+
+  51110 + 438778 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

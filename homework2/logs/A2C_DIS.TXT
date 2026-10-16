@@ -1,0 +1,196 @@
+Module: D:\Homework\6\HUI\dos\work\A2C.C
+GROUP: 'DGROUP' CONST,CONST2,_DATA
+
+Segment: _TEXT BYTE USE16 0000005D bytes
+
+/* Assignment 2, part 3: compile for 8086, 16-bit DOS. */
+#include <stdio.h>
+/* Keep putchar as a function call for readable disassembly. */
+#undef putchar
+
+int main(void)
+0000				main_:
+0000  53				push		bx
+0001  51				push		cx
+0002  52				push		dx
+0003  56				push		si
+0004  57				push		di
+0005  55				push		bp
+0006  89 E5				mov		bp,sp
+0008  81 EC 08 00			sub		sp,0x0008
+
+{
+    int row;
+    int col;
+    int ch = 'a';
+000C				L$1:
+000C  C7 46 FE 61 00			mov		word ptr -0x2[bp],0x0061
+
+
+    for (row = 0; row < 2; ++row) {
+0011  C7 46 FA 00 00			mov		word ptr -0x6[bp],0x0000
+0016				L$2:
+0016  83 7E FA 02			cmp		word ptr -0x6[bp],0x0002
+001A  7D 30				jge		L$10
+
+        for (col = 0; col < 13; ++col) {
+001C				L$3:
+001C  C7 46 FC 00 00			mov		word ptr -0x4[bp],0x0000
+0021				L$4:
+0021  83 7E FC 0D			cmp		word ptr -0x4[bp],0x000d
+0025  7D 1A				jge		L$8
+
+            putchar(ch);
+0027				L$5:
+0027  8B 46 FE				mov		ax,word ptr -0x2[bp]
+002A  E8 00 00				call		putchar_
+
+            ++ch;
+002D  FF 46 FE				inc		word ptr -0x2[bp]
+
+            if (col < 12) {
+0030  83 7E FC 0C			cmp		word ptr -0x4[bp],0x000c
+0034  7D 06				jge		L$7
+
+                putchar(' ');
+0036				L$6:
+0036  B8 20 00				mov		ax,0x0020
+0039  E8 00 00				call		putchar_
+
+            }
+        }
+003C				L$7:
+003C  FF 46 FC				inc		word ptr -0x4[bp]
+003F  EB E0				jmp		L$4
+
+        putchar('\n');
+0041				L$8:
+0041  B8 0A 00				mov		ax,0x000a
+0044  E8 00 00				call		putchar_
+
+    }
+0047				L$9:
+0047  FF 46 FA				inc		word ptr -0x6[bp]
+004A  EB CA				jmp		L$2
+
+    return 0;
+004C				L$10:
+004C  C7 46 F8 00 00			mov		word ptr -0x8[bp],0x0000
+
+}
+0051  8B 46 F8				mov		ax,word ptr -0x8[bp]
+0054				L$11:
+0054  89 EC				mov		sp,bp
+0056  5D				pop		bp
+0057  5F				pop		di
+0058  5E				pop		si
+0059  5A				pop		dx
+005A  59				pop		cx
+005B  5B				pop		bx
+005C  C3				ret		
+005D				L$12:
+
+Routine Size: 93 bytes,    Routine Base: _TEXT + 0000
+
+No disassembly errors
+
+Segment: CONST WORD USE16 00000000 bytes
+
+Segment: CONST2 WORD USE16 00000000 bytes
+
+Segment: _DATA WORD USE16 00000000 bytes
+
+Segment: .debug_info BYTE USE32 0000017F bytes
+0000				L$13:
+0000  7B 01 00 00 02 00                               {.....
+0006  00 00 00 00                                     DD	offset L$15
+000A  02 06 7E 01 00 00 44 3A 5C 48 6F 6D 65 77 6F 72 ..~...D:\Homewor
+001A  6B 5C 36 5C 48 55 49 5C 64 6F 73 5C 77 6F 72 6B k\6\HUI\dos\work
+002A  5C 41 32 43 2E 43 00                            \A2C.C.
+0031  00 00 00 00                                     DD	offset L$14
+0035  01 00 56 31 2E 30 20 57 41 54 43 4F 4D 00 00    ..V1.0 WATCOM..
+0044  00 00 00 00                                     DD	offset L$16
+0048  00 00 00 00 02                                  .....
+004D  04 00 00 00                                     DD	offset L$17
+0051  09 63 68 61 72 00 08 01 09 73 69 67 6E 65 64 20 .char....signed 
+0061  63 68 61 72 00 06 01 09 75 6E 73 69 67 6E 65 64 char....unsigned
+0071  20 63 68 61 72 00 08 01 09 73 68 6F 72 74 00 05  char....short..
+0081  02 09 75 6E 73 69 67 6E 65 64 20 73 68 6F 72 74 ..unsigned short
+0091  00 07 02 09 69 6E 74 00 05 02 09 75 6E 73 69 67 ....int....unsig
+00A1  6E 65 64 20 69 6E 74 00 07 02 09 6C 6F 6E 67 00 ned int....long.
+00B1  05 04 09 75 6E 73 69 67 6E 65 64 20 6C 6F 6E 67 ...unsigned long
+00C1  00 07 04 09 5F 5F 69 6E 74 36 34 00 05 08 09 75 ....__int64....u
+00D1  6E 73 69 67 6E 65 64 20 5F 5F 69 6E 74 36 34 00 nsigned __int64.
+00E1  07 08 09 5F 42 6F 6F 6C 00 07 01 88 01 7D 01 00 ..._Bool.....}..
+00F1  00 01 94 00 00 00 0C 03 0A                      .........
+00FA  00 00                                           DW	seg main_
+00FC  6D 61 69 6E 00 01 00 01 01 00 00 02 91 0C       main..........
+010A  00 00                                           DW	offset main_
+010C  5D 00                                           DW	offset L$12
+010E  00 02 90 21 D2 01 01 00 01 2E 72 65 74 75 72 6E ...!......return
+011E  00 01 6B 94 00 00 00 66 7C 01 00 00             ..k....f|...
+012A  0C 00                                           DW	offset L$1
+012C  54 00                                           DW	offset L$11
+012E  D2 01 01 00 00 72 6F 77 00 02 91 7A 94 00 00 00 .....row...z....
+013E  D2 01 01 00 00 63 6F 6C 00 02 91 7C 94 00 00 00 .....col...|....
+014E  D2 01 01 00 00 63 68 00 02 91 7E 94 00 00 00 66 .....ch...~....f
+015E  7B 01 00 00                                     {...
+0162  1C 00                                           DW	offset L$3
+0164  47 00                                           DW	offset L$9
+0166  66 7A 01 00 00                                  fz...
+016B  27 00                                           DW	offset L$5
+016D  3C 00                                           DW	offset L$7
+016F  66 79 01 00 00                                  fy...
+0174  36 00                                           DW	offset L$6
+0176  3C 00                                           DW	offset L$7
+0178  00 00 00 00 00 00 00                            .......
+
+Segment: .debug_pubnames BYTE USE32 0000001B bytes
+0000  17 00 00 00 02 00                               ......
+0006  00 00 00 00                                     DD	offset L$13
+000A  5D 00 00 00 EC 00 00 00 6D 61 69 6E 00 00 00 00 ].......main....
+001A  00                                              .
+
+Segment: .debug_aranges BYTE USE32 00000018 bytes
+0000  14 00 00 00 02 00                               ......
+0006  00 00 00 00                                     DD	offset L$13
+000A  02 02                                           ..
+000C  00 00                                           DW	offset main_
+000E  00 00                                           DW	seg main_
+0010  5D 00 00 00 00 00 00 00                         ].......
+
+Segment: .debug_line BYTE USE32 00000062 bytes
+0000				L$14:
+0000  5E 00 00 00 02 00 10 00 00 00 01 00 FF 04 0A 00 ^...............
+0010  01 01 01 01 00 00 00 00 00 00 00 25 03 44 3A 5C ...........%.D:\
+0020  48 6F 6D 65 77 6F 72 6B 5C 36 5C 48 55 49 5C 64 Homework\6\HUI\d
+0030  6F 73 5C 77 6F 72 6B 5C 41 32 43 2E 43 00 00 00 os\work\A2C.C...
+0040  00 00 03 02                                     ....
+0044  00 00                                           DW	offset main_
+0046  00 03 04                                        ...
+0049  00 00                                           DW	seg main_
+004B  06 05 01 03 05 01 03 04 3B 21 38 38 24 18 24 25 ........;!88$.$%
+005B  20 24 20 20 00 01 01                             $  ...
+
+Segment: .debug_loc BYTE USE32 00000000 bytes
+
+Segment: .debug_abbrev BYTE USE32 0000006E bytes
+0000				L$15:
+0000  06 11 01 01 13 03 08 10 06 13 0F 1B 08 25 08 42 .............%.B
+0010  0F 43 06 35 10 82 41 0B 83 41 06 00 00 09 24 00 .C.5..A..A....$.
+0020  03 08 3E 0B 0B 0B 00 00 88 01 2E 01 01 13 32 0B ..>...........2.
+0030  49 13 2C 0F 46 0A 03 08 3F 0C 20 0B 36 0B 27 0C I.,.F...?. .6.'.
+0040  4C 0B 34 0C 2A 0A 11 01 12 01 33 0B 40 0A 00 00 L.4.*.....3.@...
+0050  D2 01 34 00 32 0B 3F 0C 34 0C 03 08 02 0A 49 13 ..4.2.?.4.....I.
+0060  00 00 66 0B 01 01 13 11 01 12 01 00 00 00       ..f...........
+
+Segment: .debug_macinfo BYTE USE32 00000001 bytes
+0000				L$16:
+0000  00                                              .
+
+Segment: .debug_str BYTE USE32 00000000 bytes
+
+Segment: .WATCOM_references BYTE USE32 00000004 bytes
+0000  00 00 00 00                                     ....
+0004				L$17:
+

@@ -1,0 +1,13 @@
+* text=auto
+*.ASM text eol=crlf
+*.C text eol=crlf
+*.BAT text eol=crlf
+*.DBG text eol=crlf
+*.IN text eol=crlf
+*.EXE binary
+*.pdf binary
+*.OUT -text
+*.TXT -text
+*.txt -text
+*.md text eol=lf
+*.json text eol=lf

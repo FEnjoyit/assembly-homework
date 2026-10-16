@@ -1,0 +1,101 @@
+{
+  "verified_at": "2026-10-09T19:48:05.135204+08:00",
+  "status": "PASS",
+  "passed": 30,
+  "total": 30,
+  "environment": {
+    "emulator": "DOSBox-X 2026.10.01",
+    "assembler": "MASM 5.00",
+    "linker": "Microsoft LINK 3.60",
+    "C_compiler": "Open Watcom C16 2.0beta1 LA",
+    "C_target": "8086, 16-bit DOS, small model, optimizations disabled"
+  },
+  "program_output": {
+    "A2LOOP": {
+      "row_count": 2,
+      "letters_per_row": [
+        13,
+        13
+      ],
+      "bytes": 54,
+      "sha256": "9a36496eeefbbc6681aff28fb7ae6b6cf57bba8ba629d9efa8af7646f2909ba4"
+    },
+    "A2JUMP": {
+      "row_count": 2,
+      "letters_per_row": [
+        13,
+        13
+      ],
+      "bytes": 54,
+      "sha256": "9a36496eeefbbc6681aff28fb7ae6b6cf57bba8ba629d9efa8af7646f2909ba4"
+    },
+    "A2C": {
+      "row_count": 2,
+      "letters_per_row": [
+        13,
+        13
+      ],
+      "bytes": 54,
+      "sha256": "9a36496eeefbbc6681aff28fb7ae6b6cf57bba8ba629d9efa8af7646f2909ba4"
+    }
+  },
+  "checks": {
+    "A2LOOP_exact_output": true,
+    "A2LOOP_two_rows": true,
+    "A2LOOP_thirteen_letters_each": true,
+    "A2LOOP_a_through_z_once": true,
+    "A2LOOP_no_edge_spaces": true,
+    "A2JUMP_exact_output": true,
+    "A2JUMP_two_rows": true,
+    "A2JUMP_thirteen_letters_each": true,
+    "A2JUMP_a_through_z_once": true,
+    "A2JUMP_no_edge_spaces": true,
+    "A2C_exact_output": true,
+    "A2C_two_rows": true,
+    "A2C_thirteen_letters_each": true,
+    "A2C_a_through_z_once": true,
+    "A2C_no_edge_spaces": true,
+    "A2LOOP_zero_warnings_and_errors": true,
+    "A2JUMP_zero_warnings_and_errors": true,
+    "C_zero_warnings_and_errors": true,
+    "all_programs_completed": true,
+    "LOOP_two_machine_instructions": true,
+    "LOOP_outer_CX_push_pop": true,
+    "JUMP_two_dec_jnz_pairs": true,
+    "CX_first_row_outer_restored": true,
+    "CX_outer_LOOP_decrements_to_one": true,
+    "CX_push_saves_second_row_counter": true,
+    "CX_inner_reset_to_thirteen": true,
+    "C_main_breakpoint_reached": true,
+    "C_linked_main_disassembled": true,
+    "C_three_real_putchar_calls": true,
+    "DEBUG_all_normal_exits": true
+  },
+  "counter_snapshots": [
+    {
+      "cx": "0002",
+      "sp": "0100",
+      "ip": "002B"
+    },
+    {
+      "cx": "0001",
+      "sp": "0100",
+      "ip": "0005"
+    },
+    {
+      "cx": "0001",
+      "sp": "00FE",
+      "ip": "0006"
+    },
+    {
+      "cx": "000D",
+      "sp": "00FE",
+      "ip": "0009"
+    }
+  ],
+  "binaries_sha256": {
+    "A2C.EXE": "cc2a4671203f389c872259750e9550608ef8938cfd46b1721650e70b36f59f32",
+    "A2JUMP.EXE": "993e6e783104565a3f4a40f8228863fb2d603d167beed63d1919df2c6e637ca3",
+    "A2LOOP.EXE": "2e02f0a9e0ba6dfe87f4f84ca78cd20e15ec42c66cdfa13246d3dc0719c49732"
+  }
+}

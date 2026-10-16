@@ -1,0 +1,19 @@
+# Local generated files; required DOS EXEs in bin/ are tracked.
+__pycache__/
+*.pyc
+*.obj
+*.OBJ
+*.zip
+*.tmp
+.DS_Store
+Thumbs.db
+.env
+.env.*
+.runtime/
+# Rebuilding within src/ must not replace reviewed bin/ artifacts.
+homework*/src/*.exe
+homework*/src/*.EXE
+homework*/src/*.lst
+homework*/src/*.LST
+homework*/src/*.map
+homework*/src/*.MAP

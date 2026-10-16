@@ -1,0 +1,57 @@
+Microsoft (R) Macro Assembler Version 5.00                  10/16/26 18:39:02
+                                                             Page     1-1
+
+
+				; Assignment 1: Hello world, using LEA (MASM 5.
+				0 / 8086 DOS). 
+				.MODEL SMALL 
+ 0100				.STACK 100H 
+ 0000				.DATA 
+ 0000  48 65 6C 6C 6F 20 77	Hello DB 'Hello world!',0DH,0AH,'$' 
+       6F 72 6C 64 21 0D 0A	
+       24			
+ 0000				.CODE 
+ 0000				START: 
+ 0000  B8 ---- R		    MOV AX,@DATA 
+ 0003  8E D8			    MOV DS,AX 
+ 0005  8D 16 0000 R		    LEA DX,Hello 
+ 0009  B4 09			    MOV AH,09H 
+ 000B  CD 21			    INT 21H 
+ 000D  B8 4C00			    MOV AX,4C00H 
+ 0010  CD 21			    INT 21H 
+ 0012				END START 
+Microsoft (R) Macro Assembler Version 5.00                  10/16/26 18:39:02
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+DGROUP . . . . . . . . . . . . .  	GROUP
+  _DATA  . . . . . . . . . . . .  	000F	WORD	PUBLIC	'DATA'
+  STACK  . . . . . . . . . . . .  	0100	PARA	STACK	'STACK'
+_TEXT  . . . . . . . . . . . . .  	0012	WORD	PUBLIC	'CODE'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+HELLO  . . . . . . . . . . . . .  	L BYTE	0000	_DATA
+
+START  . . . . . . . . . . . . .  	L NEAR	0000	_TEXT
+
+@CODE  . . . . . . . . . . . . .  	TEXT  _TEXT		
+@CODESIZE  . . . . . . . . . . .  	TEXT  0		
+@DATASIZE  . . . . . . . . . . .  	TEXT  0		
+@FILENAME  . . . . . . . . . . .  	TEXT  A1LEA		
+
+
+     15 Source  Lines
+     15 Total   Lines
+     16 Symbols
+
+  51078 + 438810 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

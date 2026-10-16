@@ -1,0 +1,31 @@
+-u cs:0 l32
+0E10:0000 B361              MOV     BL,61
+0E10:0002 BE0200            MOV     SI,0002
+0E10:0005 BF0D00            MOV     DI,000D
+0E10:0008 8AD3              MOV     DL,BL
+0E10:000A B402              MOV     AH,02
+0E10:000C CD21              INT     21
+0E10:000E FEC3              INC     BL
+0E10:0010 83FF01            CMP     DI,+01
+0E10:0013 7406              JZ      001B
+0E10:0015 B220              MOV     DL,20
+0E10:0017 B402              MOV     AH,02
+0E10:0019 CD21              INT     21
+0E10:001B 4F                DEC     DI
+0E10:001C 75EA              JNZ     0008
+0E10:001E B20D              MOV     DL,0D
+0E10:0020 B402              MOV     AH,02
+0E10:0022 CD21              INT     21
+0E10:0024 B20A              MOV     DL,0A
+0E10:0026 B402              MOV     AH,02
+0E10:0028 CD21              INT     21
+0E10:002A 4E                DEC     SI
+0E10:002B 75D8              JNZ     0005
+0E10:002D B8004C            MOV     AX,4C00
+0E10:0030 CD21              INT     21
+-g
+a b c d e f g h i j k l m
+n o p q r s t u v w x y z
+
+Program terminated normally (0000)
+-q
