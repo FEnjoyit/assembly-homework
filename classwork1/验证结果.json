@@ -1,0 +1,23 @@
+{
+  "verified_at": "2026-10-16T19:00:51.529371+08:00",
+  "status": "PASS",
+  "passed": 795,
+  "total": 795,
+  "case_count": 787,
+  "case_passed": 787,
+  "hex_to_decimal_cases": 458,
+  "decimal_to_hex_cases": 329,
+  "invalid_input_cases": 35,
+  "environment": {
+    "emulator": "DOSBox-X 2026.10.01",
+    "assembler": "MASM 5.00",
+    "linker": "Microsoft LINK 3.60"
+  },
+  "sha256": {
+    "src/C1D2H.ASM": "a8c26edcd13f07ff551777b754cf0a5a0f5ecc6e135bd0b0585dc67125746d4a",
+    "src/C1H2D.ASM": "44b0b90e822cbec907fbbb1f39cc1397dbdbb7d5579d05b77a1904b6886f7280",
+    "bin/C1H2D.EXE": "f0c43dd6d172ee988e87e63a808894a20927fa8a6417f9524edb53fba4354ab6",
+    "bin/C1D2H.EXE": "0b477ea952faf1958d1f30c43397d0101e587e0d6c72c89e7a4e7e710b0b0fee"
+  },
+  "failed_checks": []
+}

@@ -1,0 +1,7 @@
+Please input a Dec number (0-65535):
+65536
+Invalid input. Enter a decimal number from 0 to 65535.
+Please input a Dec number (0-65535):
+65535
+The Hex number:
+FFFF

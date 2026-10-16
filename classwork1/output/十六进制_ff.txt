@@ -1,0 +1,4 @@
+Please input a Hex number:
+ff
+The Dec number:
+255

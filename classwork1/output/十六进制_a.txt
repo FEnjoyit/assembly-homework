@@ -1,0 +1,4 @@
+Please input a Hex number:
+a
+The Dec number:
+10

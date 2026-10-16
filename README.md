@@ -1,11 +1,12 @@
 # 8086 汇编课程作业
 
-每次作业独立放在一个子目录，包含源码、可执行程序、报告和实际运行记录。
+课后作业与课堂练习分别编号，每题独立放在一个子目录，包含源码、可执行程序、Markdown 报告和运行记录。
 
-| 作业 | 内容 | 报告 | 源码 | EXE |
+| 作业 / 练习 | 内容 | 报告 | 源码 | EXE |
 | --- | --- | --- | --- | --- |
 | [作业1](homework1/) | Hello world：传统汇编链接、DEBUG 反汇编、直接写内存执行、程序结构与寄存器 | [Markdown](homework1/作业1_报告.md) | [src](homework1/src/) | [bin](homework1/bin/) |
 | [作业2](homework2/) | a–z 字母表，每行13个：LOOP、条件跳转、C 实现及真实反汇编注释 | [Markdown](homework2/作业2_报告.md) | [src](homework2/src/) | [bin](homework2/bin/) |
+| [课堂练习1](classwork1/) | 进制转换：1至2位十六进制转十进制，追加十进制转十六进制 | [Markdown](classwork1/课堂练习1_进制转换.md) | [src](classwork1/src/) | [bin](classwork1/bin/) |
 
 ## 运行环境
 
@@ -39,14 +40,22 @@ homework2/          第二次作业
   output/          三份实际输出
   logs/            编译与调试记录
   作业2_报告.md
+classwork1/         课堂练习1，独立编号
+  src/             两份 ASM 和编译批处理
+  bin/             两份 DOS EXE
+  output/          实际运行示例
+  logs/            汇编、链接及逐用例测试记录
+  tests/           测试脚本
+  课堂练习1_进制转换.md
 environment/       共用环境说明
 ```
 
-后续每次作业新增 `homework3`、`homework4` 等同级目录，并在本页增加入口。
+课后作业使用 `homework1`、`homework2`、`homework3` 等目录；课堂练习使用 `classwork1`、`classwork2`、`classwork3` 等目录，各自顺序编号，并在本页增加入口。
 
 ## 验证
 
 - 作业1：[23/23 项通过](homework1/验证结果.json)，传统方式与直接写内存方式均输出 `Hello world!` 并正常退出。
 - 作业2：[30/30 项通过](homework2/验证结果.json)，三个版本输出逐字节一致，每行13个字母。
+- 课堂练习1：[795/795 项通过](classwork1/验证结果.json)，787个输入用例通过，覆盖全部 `00～FF` 数值、十进制边界和非法输入重试。
 
 运行和反汇编记录保留在各作业的 `logs` 中，包含对应源码和 EXE 的校验值。

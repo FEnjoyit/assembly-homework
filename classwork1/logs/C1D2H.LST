@@ -1,0 +1,209 @@
+Microsoft (R) Macro Assembler Version 5.00                  10/16/26 19:00:38
+                                                             Page     1-1
+
+
+				; Classwork 1 extra: unsigned decimal (0..65535
+				) -> hexadecimal. 
+				; MASM 5.0 / 8086 / 16-bit DOS. ASCII source, n
+				o BOM. 
+				.MODEL SMALL 
+ 0100				.STACK 100H 
+ 0000				.DATA 
+ 0000  50 6C 65 61 73 65 20	    PROMPT DB 'Please input a Dec number (0-655
+				35):',13,10,'$' 
+       69 6E 70 75 74 20 61	
+       20 44 65 63 20 6E 75	
+       6D 62 65 72 20 28 30	
+       2D 36 35 35 33 35 29	
+       3A 0D 0A 24		
+ 0027  54 68 65 20 48 65 78	    ANSWER DB 'The Hex number:',13,10,'$' 
+       20 6E 75 6D 62 65 72	
+       3A 0D 0A 24		
+ 0039  49 6E 76 61 6C 69 64	    BADMSG DB 'Invalid input. Enter a decimal n
+				umber from 0 to 65535.',13,10,'$' 
+       20 69 6E 70 75 74 2E	
+       20 45 6E 74 65 72 20	
+       61 20 64 65 63 69 6D	
+       61 6C 20 6E 75 6D 62	
+       65 72 20 66 72 6F 6D	
+       20 30 20 74 6F 20 36	
+       35 35 33 35 2E 0D 0A	
+       24			
+ 0072  0D 0A 24			    CRLF   DB 13,10,'$' 
+ 0075  50 00			    INPUT  DB 80,0,80 DUP (0) 
+       0050[			
+	   00			
+			 ]	
+				
+ 00C7  0000			    VALUE  DW 0 
+ 0000				.CODE 
+ 0000				START: 
+ 0000  B8 ---- R		    MOV AX,@DATA 
+ 0003  8E D8			    MOV DS,AX 
+ 0005				READ_AGAIN: 
+ 0005  8D 16 0000 R		    LEA DX,PROMPT 
+ 0009  B4 09			    MOV AH,09H 
+ 000B  CD 21			    INT 21H 
+ 000D  C6 06 0076 R 00		    MOV BYTE PTR INPUT[1],0 
+ 0012  8D 16 0075 R		    LEA DX,INPUT 
+ 0016  B4 0A			    MOV AH,0AH 
+ 0018  CD 21			    INT 21H 
+ 001A  E8 00A6 R		    CALL NEWLINE 
+ 001D  33 C9			    XOR CX,CX 
+ 001F  8A 0E 0076 R		    MOV CL,INPUT[1] 
+ 0023  83 F9 01			    CMP CX,1 
+ 0026  72 47			    JB INVALID 
+ 0028  83 F9 05			    CMP CX,5 
+ 002B  77 42			    JA INVALID 
+ 002D  8D 36 0077 R		    LEA SI,INPUT[2] 
+Microsoft (R) Macro Assembler Version 5.00                  10/16/26 19:00:38
+                                                             Page     1-2
+
+
+ 0031  33 C0			    XOR AX,AX 
+ 0033  BB 000A			    MOV BX,10 
+ 0036				DEC_NEXT: 
+ 0036  8A 14			    MOV DL,[SI] 
+ 0038  80 FA 30			    CMP DL,'0' 
+ 003B  72 32			    JB INVALID 
+ 003D  80 FA 39			    CMP DL,'9' 
+ 0040  77 2D			    JA INVALID 
+ 0042  80 EA 30			    SUB DL,'0' 
+ 0045  32 F6			    XOR DH,DH 
+ 0047  8B FA			    MOV DI,DX 
+				    ; DX:AX = old_value * 10. Detect overflow b
+				efore truncation. 
+ 0049  F7 E3			    MUL BX 
+ 004B  0B D2			    OR DX,DX 
+ 004D  75 20			    JNZ INVALID 
+ 004F  03 C7			    ADD AX,DI 
+ 0051  72 1C			    JC INVALID 
+ 0053  46			    INC SI 
+ 0054  E2 E0			    LOOP DEC_NEXT 
+ 0056  A3 00C7 R		    MOV VALUE,AX 
+ 0059  8D 16 0027 R		    LEA DX,ANSWER 
+ 005D  B4 09			    MOV AH,09H 
+ 005F  CD 21			    INT 21H 
+ 0061  A1 00C7 R		    MOV AX,VALUE 
+ 0064  E8 0079 R		    CALL PRINT_HEX 
+ 0067  E8 00A6 R		    CALL NEWLINE 
+ 006A  B8 4C00			    MOV AX,4C00H 
+ 006D  CD 21			    INT 21H 
+ 006F				INVALID: 
+ 006F  8D 16 0039 R		    LEA DX,BADMSG 
+ 0073  B4 09			    MOV AH,09H 
+ 0075  CD 21			    INT 21H 
+ 0077  EB 8C			    JMP READ_AGAIN 
+				 
+				; Input AX = unsigned value. Output uppercase, 
+				no leading zeroes. 
+ 0079				PRINT_HEX PROC NEAR 
+ 0079  50			    PUSH AX 
+ 007A  53			    PUSH BX 
+ 007B  51			    PUSH CX 
+ 007C  52			    PUSH DX 
+ 007D  BB 0010			    MOV BX,16 
+ 0080  33 C9			    XOR CX,CX 
+ 0082				HEX_DIVIDE: 
+ 0082  33 D2			    XOR DX,DX 
+ 0084  F7 F3			    DIV BX 
+ 0086  52			    PUSH DX 
+ 0087  41			    INC CX 
+ 0088  0B C0			    OR AX,AX 
+ 008A  75 F6			    JNZ HEX_DIVIDE 
+ 008C				HEX_OUTPUT: 
+ 008C  5A			    POP DX 
+ 008D  80 FA 09			    CMP DL,9 
+Microsoft (R) Macro Assembler Version 5.00                  10/16/26 19:00:38
+                                                             Page     1-3
+
+
+ 0090  76 06			    JBE HEX_NUMBER 
+ 0092  80 C2 37			    ADD DL,'A'-10 
+ 0095  EB 04 90			    JMP HEX_WRITE 
+ 0098				HEX_NUMBER: 
+ 0098  80 C2 30			    ADD DL,'0' 
+ 009B				HEX_WRITE: 
+ 009B  B4 02			    MOV AH,02H 
+ 009D  CD 21			    INT 21H 
+ 009F  E2 EB			    LOOP HEX_OUTPUT 
+ 00A1  5A			    POP DX 
+ 00A2  59			    POP CX 
+ 00A3  5B			    POP BX 
+ 00A4  58			    POP AX 
+ 00A5  C3			    RET 
+ 00A6				PRINT_HEX ENDP 
+				 
+ 00A6				NEWLINE PROC NEAR 
+ 00A6  50			    PUSH AX 
+ 00A7  52			    PUSH DX 
+ 00A8  8D 16 0072 R		    LEA DX,CRLF 
+ 00AC  B4 09			    MOV AH,09H 
+ 00AE  CD 21			    INT 21H 
+ 00B0  5A			    POP DX 
+ 00B1  58			    POP AX 
+ 00B2  C3			    RET 
+ 00B3				NEWLINE ENDP 
+ 00B3				END START 
+Microsoft (R) Macro Assembler Version 5.00                  10/16/26 19:00:38
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+DGROUP . . . . . . . . . . . . .  	GROUP
+  _DATA  . . . . . . . . . . . .  	00C9	WORD	PUBLIC	'DATA'
+  STACK  . . . . . . . . . . . .  	0100	PARA	STACK	'STACK'
+_TEXT  . . . . . . . . . . . . .  	00B3	WORD	PUBLIC	'CODE'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+ANSWER . . . . . . . . . . . . .  	L BYTE	0027	_DATA
+
+BADMSG . . . . . . . . . . . . .  	L BYTE	0039	_DATA
+
+CRLF . . . . . . . . . . . . . .  	L BYTE	0072	_DATA
+
+DEC_NEXT . . . . . . . . . . . .  	L NEAR	0036	_TEXT
+
+HEX_DIVIDE . . . . . . . . . . .  	L NEAR	0082	_TEXT
+HEX_NUMBER . . . . . . . . . . .  	L NEAR	0098	_TEXT
+HEX_OUTPUT . . . . . . . . . . .  	L NEAR	008C	_TEXT
+HEX_WRITE  . . . . . . . . . . .  	L NEAR	009B	_TEXT
+
+INPUT  . . . . . . . . . . . . .  	L BYTE	0075	_DATA
+INVALID  . . . . . . . . . . . .  	L NEAR	006F	_TEXT
+
+NEWLINE  . . . . . . . . . . . .  	N PROC	00A6	_TEXT	Length = 000D
+
+PRINT_HEX  . . . . . . . . . . .  	N PROC	0079	_TEXT	Length = 002D
+PROMPT . . . . . . . . . . . . .  	L BYTE	0000	_DATA
+
+READ_AGAIN . . . . . . . . . . .  	L NEAR	0005	_TEXT
+
+START  . . . . . . . . . . . . .  	L NEAR	0000	_TEXT
+
+VALUE  . . . . . . . . . . . . .  	L WORD	00C7	_DATA
+
+@CODE  . . . . . . . . . . . . .  	TEXT  _TEXT		
+@CODESIZE  . . . . . . . . . . .  	TEXT  0		
+@DATASIZE  . . . . . . . . . . .  	TEXT  0		
+@FILENAME  . . . . . . . . . . .  	TEXT  C1D2H		
+
+Microsoft (R) Macro Assembler Version 5.00                  10/16/26 19:00:38
+                                                             Symbols-2
+
+
+
+    110 Source  Lines
+    110 Total   Lines
+     30 Symbols
+
+  50886 + 439002 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors
