@@ -1,0 +1,121 @@
+Microsoft (R) Macro Assembler Version 5.00                  10/23/26 15:14:18
+                                                             Page     1-1
+
+
+				; Assignment 3: keep the running sum in the dat
+				a segment. 
+				.MODEL SMALL 
+ 0100				.STACK 100H 
+ 0000				.DATA 
+ 0000  0000			    RESULT DW 0 
+				PUBLIC RESULT 
+ 0000				.CODE 
+				PUBLIC SUM_DONE 
+ 0000				START: 
+ 0000  B8 ---- R		    MOV AX,@DATA 
+ 0003  8E D8			    MOV DS,AX 
+ 0005  C7 06 0000 R 0000	    MOV RESULT,0 
+ 000B  BB 0001			    MOV BX,1 
+ 000E  B9 0064			    MOV CX,100 
+ 0011				SUM_LOOP: 
+ 0011  01 1E 0000 R		    ADD RESULT,BX 
+ 0015  43			    INC BX 
+ 0016  E2 F9			    LOOP SUM_LOOP 
+ 0018				SUM_DONE: 
+ 0018  A1 0000 R		    MOV AX,RESULT 
+ 001B  E8 0026 R		    CALL PRINT_DEC 
+ 001E  E8 0048 R		    CALL NEWLINE 
+ 0021  B8 4C00			    MOV AX,4C00H 
+ 0024  CD 21			    INT 21H 
+				INCLUDE S3IO.INC 
+			     C	; Common 8086 decimal output routines. Input AX
+				 is preserved. 
+ 0026                        C	PRINT_DEC PROC NEAR 
+ 0026  50                    C	    PUSH AX 
+ 0027  53                    C	    PUSH BX 
+ 0028  51                    C	    PUSH CX 
+ 0029  52                    C	    PUSH DX 
+ 002A  BB 000A               C	    MOV BX,10 
+ 002D  33 C9                 C	    XOR CX,CX 
+ 002F                        C	PD_DIVIDE: 
+ 002F  33 D2                 C	    XOR DX,DX 
+ 0031  F7 F3                 C	    DIV BX 
+ 0033  52                    C	    PUSH DX 
+ 0034  41                    C	    INC CX 
+ 0035  0B C0                 C	    OR AX,AX 
+ 0037  75 F6                 C	    JNZ PD_DIVIDE 
+ 0039                        C	PD_WRITE: 
+ 0039  5A                    C	    POP DX 
+ 003A  80 C2 30              C	    ADD DL,'0' 
+ 003D  B4 02                 C	    MOV AH,02H 
+ 003F  CD 21                 C	    INT 21H 
+ 0041  E2 F6                 C	    LOOP PD_WRITE 
+ 0043  5A                    C	    POP DX 
+ 0044  59                    C	    POP CX 
+ 0045  5B                    C	    POP BX 
+ 0046  58                    C	    POP AX 
+ 0047  C3                    C	    RET 
+ 0048                        C	PRINT_DEC ENDP 
+Microsoft (R) Macro Assembler Version 5.00                  10/23/26 15:14:18
+                                                             Page     1-2
+
+
+			     C	 
+ 0048                        C	NEWLINE PROC NEAR 
+ 0048  50                    C	    PUSH AX 
+ 0049  52                    C	    PUSH DX 
+ 004A  B2 0D                 C	    MOV DL,13 
+ 004C  B4 02                 C	    MOV AH,02H 
+ 004E  CD 21                 C	    INT 21H 
+ 0050  B2 0A                 C	    MOV DL,10 
+ 0052  B4 02                 C	    MOV AH,02H 
+ 0054  CD 21                 C	    INT 21H 
+ 0056  5A                    C	    POP DX 
+ 0057  58                    C	    POP AX 
+ 0058  C3                    C	    RET 
+ 0059                        C	NEWLINE ENDP 
+				 
+ 0059				END START 
+Microsoft (R) Macro Assembler Version 5.00                  10/23/26 15:14:18
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+DGROUP . . . . . . . . . . . . .  	GROUP
+  _DATA  . . . . . . . . . . . .  	0002	WORD	PUBLIC	'DATA'
+  STACK  . . . . . . . . . . . .  	0100	PARA	STACK	'STACK'
+_TEXT  . . . . . . . . . . . . .  	0059	WORD	PUBLIC	'CODE'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+NEWLINE  . . . . . . . . . . . .  	N PROC	0048	_TEXT	Length = 0011
+
+PD_DIVIDE  . . . . . . . . . . .  	L NEAR	002F	_TEXT
+PD_WRITE . . . . . . . . . . . .  	L NEAR	0039	_TEXT
+PRINT_DEC  . . . . . . . . . . .  	N PROC	0026	_TEXT	Length = 0022
+
+RESULT . . . . . . . . . . . . .  	L WORD	0000	_DATA	Global
+
+START  . . . . . . . . . . . . .  	L NEAR	0000	_TEXT
+SUM_DONE . . . . . . . . . . . .  	L NEAR	0018	_TEXT	Global
+SUM_LOOP . . . . . . . . . . . .  	L NEAR	0011	_TEXT
+
+@CODE  . . . . . . . . . . . . .  	TEXT  _TEXT		
+@CODESIZE  . . . . . . . . . . .  	TEXT  0		
+@DATASIZE  . . . . . . . . . . .  	TEXT  0		
+@FILENAME  . . . . . . . . . . .  	TEXT  S3DATA		
+
+
+     67 Source  Lines
+     68 Total   Lines
+     22 Symbols
+
+  51062 + 422442 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

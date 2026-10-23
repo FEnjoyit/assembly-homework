@@ -1,0 +1,13 @@
+Please input n (1-100):
+0
+Invalid input. Enter an integer from 1 to 100.
+Please input n (1-100):
+101
+Invalid input. Enter an integer from 1 to 100.
+Please input n (1-100):
+x
+Invalid input. Enter an integer from 1 to 100.
+Please input n (1-100):
+10
+The sum:
+55

@@ -1,0 +1,73 @@
+; Assignment 3: read n (1..100), then print 1+2+...+n in decimal.
+.MODEL SMALL
+.STACK 100H
+.DATA
+    PROMPT DB 'Please input n (1-100):',13,10,'$'
+    ANSWER DB 'The sum:',13,10,'$'
+    BADMSG DB 'Invalid input. Enter an integer from 1 to 100.',13,10,'$'
+    INPUT  DB 80,0,80 DUP (0)
+    N      DW 0
+    RESULT DW 0
+.CODE
+START:
+    MOV AX,@DATA
+    MOV DS,AX
+READ_AGAIN:
+    LEA DX,PROMPT
+    MOV AH,09H
+    INT 21H
+    MOV BYTE PTR INPUT[1],0
+    LEA DX,INPUT
+    MOV AH,0AH
+    INT 21H
+    CALL NEWLINE
+    XOR CX,CX
+    MOV CL,INPUT[1]
+    CMP CX,1
+    JB INVALID
+    CMP CX,3
+    JA INVALID
+    LEA SI,INPUT[2]
+    XOR AX,AX
+    MOV BX,10
+READ_DIGIT:
+    MOV DL,[SI]
+    CMP DL,'0'
+    JB INVALID
+    CMP DL,'9'
+    JA INVALID
+    SUB DL,'0'
+    XOR DH,DH
+    MOV DI,DX
+    MUL BX
+    ADD AX,DI
+    INC SI
+    LOOP READ_DIGIT
+    CMP AX,1
+    JB INVALID
+    CMP AX,100
+    JA INVALID
+    MOV N,AX
+    MOV CX,AX
+    MOV BX,1
+    XOR AX,AX
+SUM_LOOP:
+    ADD AX,BX
+    INC BX
+    LOOP SUM_LOOP
+    MOV RESULT,AX
+    LEA DX,ANSWER
+    MOV AH,09H
+    INT 21H
+    MOV AX,RESULT
+    CALL PRINT_DEC
+    CALL NEWLINE
+    MOV AX,4C00H
+    INT 21H
+INVALID:
+    LEA DX,BADMSG
+    MOV AH,09H
+    INT 21H
+    JMP READ_AGAIN
+INCLUDE S3IO.INC
+END START

@@ -1,0 +1,4 @@
+Please input n (1-100):
+10
+The sum:
+55

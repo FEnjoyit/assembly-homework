@@ -1,0 +1,41 @@
+{
+  "verified_at": "2026-10-23T15:14:25.058638+08:00",
+  "status": "PASS",
+  "passed": 155,
+  "total": 155,
+  "input_case_count": 122,
+  "input_case_passed": 122,
+  "full_range_n": "1..100",
+  "invalid_input_cases": 18,
+  "fixed_program_count": 4,
+  "fixed_output": "5050\r\n",
+  "c_main_offset": "0010",
+  "c_main_bytes": 70,
+  "debug_offsets": {
+    "S3REG": "000D",
+    "S3DATA": "0018",
+    "S3STACK": "0017",
+    "RESULT": "000A",
+    "STACK_DONE": "0023"
+  },
+  "environment": {
+    "assembler": "MASM 5.00",
+    "linker": "Microsoft LINK 3.60",
+    "emulator": "DOSBox-X 2026.10.01",
+    "C_compiler": "Open Watcom C16 2.0beta1 LA"
+  },
+  "sha256": {
+    "src/S3DATA.ASM": "b474faf148c152c55074a91878a0519ddb101b5acab42c2448c961eebecfc861",
+    "src/S3INPUT.ASM": "cb11506d3a88c85da69bd0622ab236c1a1f91c4cfcdf4236634c82ffa23097cd",
+    "src/S3REG.ASM": "e9558b6cb30d050f15024e43a008d1681cf5b18864b92cafc7f461a3d212cf05",
+    "src/S3STACK.ASM": "dae96a38d424baa09162daf39cfd92722a745d7b9bc973bc47ef6f88942e3b18",
+    "src/S3IO.INC": "e9735b407b1b90c106184aff96cdcb7597c0c08b50694b271f4db51bd7fc336b",
+    "src/S3C.C": "65279d613b166d87d59b7429f837593000cf8b530f95781d4af1fe1d9aa5acc8",
+    "bin/S3REG.EXE": "5e00641e30e11b1ac3149cd7912cf5988dc80ce7142992cbe1bb932baf1c538d",
+    "bin/S3DATA.EXE": "d7df2a1419702620a4a4df3cd89895c88a1087f7a2c4a9ed5a9eb47be4ee188d",
+    "bin/S3STACK.EXE": "03123148329c7d5b60340847f44c1d47a46aaea1140608b79a61b5b59e8c17cf",
+    "bin/S3INPUT.EXE": "3aef2a81d7a358b87c6af883681537b9cd9fe99ad16d92fb5c3989b663321f08",
+    "bin/S3C.EXE": "b26d663f811ba78e024ebeb43350a23f3ee35dfcedf51a5b398b3bc14ee06f6a"
+  },
+  "failed_checks": []
+}

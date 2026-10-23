@@ -8,7 +8,7 @@
 | MASM | Microsoft 5.00 | 汇编 ASM 为 OBJ，生成 LST |
 | LINK | Microsoft 3.60 | 链接 OBJ 为 EXE，生成 MAP |
 | DEBUG | FreeDOS 2.50 | `e` 写内存、`u` 反汇编、`r` 看寄存器、`t` 单步、`g` 执行 |
-| Open Watcom C16 / WDIS | 2.0beta1 LA | 作业2的 8086 DOS C 编译与反汇编 |
+| Open Watcom C16 / WDIS | 2.0beta1 LA | 作业2、作业3的 8086 DOS C 编译与反汇编 |
 
 MASM/LINK 使用课程提供的软件包。安装 DOSBox-X 后，将课程工具目录挂载为工具盘并加入 DOS PATH，再按根目录 README 挂载单次作业目录。
 

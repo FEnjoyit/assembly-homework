@@ -1,0 +1,11 @@
+tm 1
+u cs:0 l17
+g=0 17
+r
+d ss:sp l2
+t
+r
+g 23
+r
+g
+q

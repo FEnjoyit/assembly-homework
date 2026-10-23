@@ -1,0 +1,112 @@
+Microsoft (R) Macro Assembler Version 5.00                  10/23/26 15:14:18
+                                                             Page     1-1
+
+
+				; Assignment 3: keep the running sum in AX. 
+				.MODEL SMALL 
+ 0100				.STACK 100H 
+ 0000				.CODE 
+				PUBLIC SUM_DONE 
+ 0000				START: 
+ 0000  33 C0			    XOR AX,AX 
+ 0002  BB 0001			    MOV BX,1 
+ 0005  B9 0064			    MOV CX,100 
+ 0008				SUM_LOOP: 
+ 0008  03 C3			    ADD AX,BX 
+ 000A  43			    INC BX 
+ 000B  E2 FB			    LOOP SUM_LOOP 
+ 000D				SUM_DONE: 
+ 000D  E8 0018 R		    CALL PRINT_DEC 
+ 0010  E8 003A R		    CALL NEWLINE 
+ 0013  B8 4C00			    MOV AX,4C00H 
+ 0016  CD 21			    INT 21H 
+				INCLUDE S3IO.INC 
+			     C	; Common 8086 decimal output routines. Input AX
+				 is preserved. 
+ 0018                        C	PRINT_DEC PROC NEAR 
+ 0018  50                    C	    PUSH AX 
+ 0019  53                    C	    PUSH BX 
+ 001A  51                    C	    PUSH CX 
+ 001B  52                    C	    PUSH DX 
+ 001C  BB 000A               C	    MOV BX,10 
+ 001F  33 C9                 C	    XOR CX,CX 
+ 0021                        C	PD_DIVIDE: 
+ 0021  33 D2                 C	    XOR DX,DX 
+ 0023  F7 F3                 C	    DIV BX 
+ 0025  52                    C	    PUSH DX 
+ 0026  41                    C	    INC CX 
+ 0027  0B C0                 C	    OR AX,AX 
+ 0029  75 F6                 C	    JNZ PD_DIVIDE 
+ 002B                        C	PD_WRITE: 
+ 002B  5A                    C	    POP DX 
+ 002C  80 C2 30              C	    ADD DL,'0' 
+ 002F  B4 02                 C	    MOV AH,02H 
+ 0031  CD 21                 C	    INT 21H 
+ 0033  E2 F6                 C	    LOOP PD_WRITE 
+ 0035  5A                    C	    POP DX 
+ 0036  59                    C	    POP CX 
+ 0037  5B                    C	    POP BX 
+ 0038  58                    C	    POP AX 
+ 0039  C3                    C	    RET 
+ 003A                        C	PRINT_DEC ENDP 
+			     C	 
+ 003A                        C	NEWLINE PROC NEAR 
+ 003A  50                    C	    PUSH AX 
+ 003B  52                    C	    PUSH DX 
+ 003C  B2 0D                 C	    MOV DL,13 
+ 003E  B4 02                 C	    MOV AH,02H 
+ 0040  CD 21                 C	    INT 21H 
+Microsoft (R) Macro Assembler Version 5.00                  10/23/26 15:14:18
+                                                             Page     1-2
+
+
+ 0042  B2 0A                 C	    MOV DL,10 
+ 0044  B4 02                 C	    MOV AH,02H 
+ 0046  CD 21                 C	    INT 21H 
+ 0048  5A                    C	    POP DX 
+ 0049  58                    C	    POP AX 
+ 004A  C3                    C	    RET 
+ 004B                        C	NEWLINE ENDP 
+				 
+ 004B				END START 
+Microsoft (R) Macro Assembler Version 5.00                  10/23/26 15:14:18
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+DGROUP . . . . . . . . . . . . .  	GROUP
+  _DATA  . . . . . . . . . . . .  	0000	WORD	PUBLIC	'DATA'
+  STACK  . . . . . . . . . . . .  	0100	PARA	STACK	'STACK'
+_TEXT  . . . . . . . . . . . . .  	004B	WORD	PUBLIC	'CODE'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+NEWLINE  . . . . . . . . . . . .  	N PROC	003A	_TEXT	Length = 0011
+
+PD_DIVIDE  . . . . . . . . . . .  	L NEAR	0021	_TEXT
+PD_WRITE . . . . . . . . . . . .  	L NEAR	002B	_TEXT
+PRINT_DEC  . . . . . . . . . . .  	N PROC	0018	_TEXT	Length = 0022
+
+START  . . . . . . . . . . . . .  	L NEAR	0000	_TEXT
+SUM_DONE . . . . . . . . . . . .  	L NEAR	000D	_TEXT	Global
+SUM_LOOP . . . . . . . . . . . .  	L NEAR	0008	_TEXT
+
+@CODE  . . . . . . . . . . . . .  	TEXT  _TEXT		
+@CODESIZE  . . . . . . . . . . .  	TEXT  0		
+@DATASIZE  . . . . . . . . . . .  	TEXT  0		
+@FILENAME  . . . . . . . . . . .  	TEXT  S3REG		
+
+
+     61 Source  Lines
+     62 Total   Lines
+     21 Symbols
+
+  51078 + 422426 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

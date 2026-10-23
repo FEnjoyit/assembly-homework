@@ -1,0 +1,50 @@
+-r
+AX=0000 BX=0000 CX=3DF8 DX=0000 SP=0800 BP=0000 SI=0000 DI=0000 
+DS=0DF0 ES=0DF0 SS=102D CS=0E00 IP=0076 NV UP EI PL ZR NA PE NC 
+0E00:0076 E98A00            JMP     0103
+-u cs:10 l46
+0E00:0010 53                PUSH    BX
+0E00:0011 51                PUSH    CX
+0E00:0012 52                PUSH    DX
+0E00:0013 56                PUSH    SI
+0E00:0014 57                PUSH    DI
+0E00:0015 55                PUSH    BP
+0E00:0016 89E5              MOV     BP,SP
+0E00:0018 81EC0600          SUB     SP,0006
+0E00:001C C746FE0000        MOV     WORD PTR [BP-02],0000
+0E00:0021 C746FC0100        MOV     WORD PTR [BP-04],0001
+0E00:0026 837EFC64          CMP     WORD PTR [BP-04],+64
+0E00:002A 770B              JA      0037
+0E00:002C 8B46FC            MOV     AX,[BP-04]
+0E00:002F 0146FE            ADD     [BP-02],AX
+0E00:0032 FF46FC            INC     WORD PTR [BP-04]
+0E00:0035 EBEF              JMP     0026
+0E00:0037 8B46FE            MOV     AX,[BP-02]
+0E00:003A 50                PUSH    AX
+0E00:003B B82200            MOV     AX,0022
+0E00:003E 50                PUSH    AX
+0E00:003F E81400            CALL    0056
+0E00:0042 83C404            ADD     SP,+04
+0E00:0045 C746FA0000        MOV     WORD PTR [BP-06],0000
+0E00:004A 8B46FA            MOV     AX,[BP-06]
+0E00:004D 89EC              MOV     SP,BP
+0E00:004F 5D                POP     BP
+0E00:0050 5F                POP     DI
+0E00:0051 5E                POP     SI
+0E00:0052 5A                POP     DX
+0E00:0053 59                POP     CX
+0E00:0054 5B                POP     BX
+0E00:0055 C3                RET
+-g 10
+AX=0000 BX=0B60 CX=0000 DX=0000 SP=0B5A BP=0000 SI=0362 DI=035C 
+DS=0FF7 ES=0DF0 SS=0FF7 CS=0E00 IP=0010 NV UP EI PL ZR NA PE NC 
+0E00:0010 53                PUSH    BX
+-r
+AX=0000 BX=0B60 CX=0000 DX=0000 SP=0B5A BP=0000 SI=0362 DI=035C 
+DS=0FF7 ES=0DF0 SS=0FF7 CS=0E00 IP=0010 NV UP EI PL ZR NA PE NC 
+0E00:0010 53                PUSH    BX
+-g
+5050
+
+Program terminated normally (0000)
+-q

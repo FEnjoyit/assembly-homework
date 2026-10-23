@@ -1,0 +1,7 @@
+Please input n (1-100):
+101
+Invalid input. Enter an integer from 1 to 100.
+Please input n (1-100):
+100
+The sum:
+5050

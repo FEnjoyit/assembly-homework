@@ -1,0 +1,198 @@
+Microsoft (R) Macro Assembler Version 5.00                  10/23/26 15:14:18
+                                                             Page     1-1
+
+
+				; Assignment 3: read n (1..100), then print 1+2
+				+...+n in decimal. 
+				.MODEL SMALL 
+ 0100				.STACK 100H 
+ 0000				.DATA 
+ 0000  50 6C 65 61 73 65 20	    PROMPT DB 'Please input n (1-100):',13,10,'
+				$' 
+       69 6E 70 75 74 20 6E	
+       20 28 31 2D 31 30 30	
+       29 3A 0D 0A 24		
+ 001A  54 68 65 20 73 75 6D	    ANSWER DB 'The sum:',13,10,'$' 
+       3A 0D 0A 24		
+ 0025  49 6E 76 61 6C 69 64	    BADMSG DB 'Invalid input. Enter an integer 
+				from 1 to 100.',13,10,'$' 
+       20 69 6E 70 75 74 2E	
+       20 45 6E 74 65 72 20	
+       61 6E 20 69 6E 74 65	
+       67 65 72 20 66 72 6F	
+       6D 20 31 20 74 6F 20	
+       31 30 30 2E 0D 0A 24	
+ 0056  50 00			    INPUT  DB 80,0,80 DUP (0) 
+       0050[			
+	   00			
+			 ]	
+				
+ 00A8  0000			    N      DW 0 
+ 00AA  0000			    RESULT DW 0 
+ 0000				.CODE 
+ 0000				START: 
+ 0000  B8 ---- R		    MOV AX,@DATA 
+ 0003  8E D8			    MOV DS,AX 
+ 0005				READ_AGAIN: 
+ 0005  8D 16 0000 R		    LEA DX,PROMPT 
+ 0009  B4 09			    MOV AH,09H 
+ 000B  CD 21			    INT 21H 
+ 000D  C6 06 0057 R 00		    MOV BYTE PTR INPUT[1],0 
+ 0012  8D 16 0056 R		    LEA DX,INPUT 
+ 0016  B4 0A			    MOV AH,0AH 
+ 0018  CD 21			    INT 21H 
+ 001A  E8 00AF R		    CALL NEWLINE 
+ 001D  33 C9			    XOR CX,CX 
+ 001F  8A 0E 0057 R		    MOV CL,INPUT[1] 
+ 0023  83 F9 01			    CMP CX,1 
+ 0026  72 5A			    JB INVALID 
+ 0028  83 F9 03			    CMP CX,3 
+ 002B  77 55			    JA INVALID 
+ 002D  8D 36 0058 R		    LEA SI,INPUT[2] 
+ 0031  33 C0			    XOR AX,AX 
+ 0033  BB 000A			    MOV BX,10 
+ 0036				READ_DIGIT: 
+ 0036  8A 14			    MOV DL,[SI] 
+ 0038  80 FA 30			    CMP DL,'0' 
+ 003B  72 45			    JB INVALID 
+ 003D  80 FA 39			    CMP DL,'9' 
+Microsoft (R) Macro Assembler Version 5.00                  10/23/26 15:14:18
+                                                             Page     1-2
+
+
+ 0040  77 40			    JA INVALID 
+ 0042  80 EA 30			    SUB DL,'0' 
+ 0045  32 F6			    XOR DH,DH 
+ 0047  8B FA			    MOV DI,DX 
+ 0049  F7 E3			    MUL BX 
+ 004B  03 C7			    ADD AX,DI 
+ 004D  46			    INC SI 
+ 004E  E2 E6			    LOOP READ_DIGIT 
+ 0050  3D 0001			    CMP AX,1 
+ 0053  72 2D			    JB INVALID 
+ 0055  3D 0064			    CMP AX,100 
+ 0058  77 28			    JA INVALID 
+ 005A  A3 00A8 R		    MOV N,AX 
+ 005D  8B C8			    MOV CX,AX 
+ 005F  BB 0001			    MOV BX,1 
+ 0062  33 C0			    XOR AX,AX 
+ 0064				SUM_LOOP: 
+ 0064  03 C3			    ADD AX,BX 
+ 0066  43			    INC BX 
+ 0067  E2 FB			    LOOP SUM_LOOP 
+ 0069  A3 00AA R		    MOV RESULT,AX 
+ 006C  8D 16 001A R		    LEA DX,ANSWER 
+ 0070  B4 09			    MOV AH,09H 
+ 0072  CD 21			    INT 21H 
+ 0074  A1 00AA R		    MOV AX,RESULT 
+ 0077  E8 008D R		    CALL PRINT_DEC 
+ 007A  E8 00AF R		    CALL NEWLINE 
+ 007D  B8 4C00			    MOV AX,4C00H 
+ 0080  CD 21			    INT 21H 
+ 0082				INVALID: 
+ 0082  8D 16 0025 R		    LEA DX,BADMSG 
+ 0086  B4 09			    MOV AH,09H 
+ 0088  CD 21			    INT 21H 
+ 008A  E9 0005 R		    JMP READ_AGAIN 
+				INCLUDE S3IO.INC 
+			     C	; Common 8086 decimal output routines. Input AX
+				 is preserved. 
+ 008D                        C	PRINT_DEC PROC NEAR 
+ 008D  50                    C	    PUSH AX 
+ 008E  53                    C	    PUSH BX 
+ 008F  51                    C	    PUSH CX 
+ 0090  52                    C	    PUSH DX 
+ 0091  BB 000A               C	    MOV BX,10 
+ 0094  33 C9                 C	    XOR CX,CX 
+ 0096                        C	PD_DIVIDE: 
+ 0096  33 D2                 C	    XOR DX,DX 
+ 0098  F7 F3                 C	    DIV BX 
+ 009A  52                    C	    PUSH DX 
+ 009B  41                    C	    INC CX 
+ 009C  0B C0                 C	    OR AX,AX 
+ 009E  75 F6                 C	    JNZ PD_DIVIDE 
+ 00A0                        C	PD_WRITE: 
+ 00A0  5A                    C	    POP DX 
+ 00A1  80 C2 30              C	    ADD DL,'0' 
+Microsoft (R) Macro Assembler Version 5.00                  10/23/26 15:14:18
+                                                             Page     1-3
+
+
+ 00A4  B4 02                 C	    MOV AH,02H 
+ 00A6  CD 21                 C	    INT 21H 
+ 00A8  E2 F6                 C	    LOOP PD_WRITE 
+ 00AA  5A                    C	    POP DX 
+ 00AB  59                    C	    POP CX 
+ 00AC  5B                    C	    POP BX 
+ 00AD  58                    C	    POP AX 
+ 00AE  C3                    C	    RET 
+ 00AF                        C	PRINT_DEC ENDP 
+			     C	 
+ 00AF                        C	NEWLINE PROC NEAR 
+ 00AF  50                    C	    PUSH AX 
+ 00B0  52                    C	    PUSH DX 
+ 00B1  B2 0D                 C	    MOV DL,13 
+ 00B3  B4 02                 C	    MOV AH,02H 
+ 00B5  CD 21                 C	    INT 21H 
+ 00B7  B2 0A                 C	    MOV DL,10 
+ 00B9  B4 02                 C	    MOV AH,02H 
+ 00BB  CD 21                 C	    INT 21H 
+ 00BD  5A                    C	    POP DX 
+ 00BE  58                    C	    POP AX 
+ 00BF  C3                    C	    RET 
+ 00C0                        C	NEWLINE ENDP 
+				 
+ 00C0				END START 
+Microsoft (R) Macro Assembler Version 5.00                  10/23/26 15:14:18
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+DGROUP . . . . . . . . . . . . .  	GROUP
+  _DATA  . . . . . . . . . . . .  	00AC	WORD	PUBLIC	'DATA'
+  STACK  . . . . . . . . . . . .  	0100	PARA	STACK	'STACK'
+_TEXT  . . . . . . . . . . . . .  	00C0	WORD	PUBLIC	'CODE'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+ANSWER . . . . . . . . . . . . .  	L BYTE	001A	_DATA
+
+BADMSG . . . . . . . . . . . . .  	L BYTE	0025	_DATA
+
+INPUT  . . . . . . . . . . . . .  	L BYTE	0056	_DATA
+INVALID  . . . . . . . . . . . .  	L NEAR	0082	_TEXT
+
+N  . . . . . . . . . . . . . . .  	L WORD	00A8	_DATA
+NEWLINE  . . . . . . . . . . . .  	N PROC	00AF	_TEXT	Length = 0011
+
+PD_DIVIDE  . . . . . . . . . . .  	L NEAR	0096	_TEXT
+PD_WRITE . . . . . . . . . . . .  	L NEAR	00A0	_TEXT
+PRINT_DEC  . . . . . . . . . . .  	N PROC	008D	_TEXT	Length = 0022
+PROMPT . . . . . . . . . . . . .  	L BYTE	0000	_DATA
+
+READ_AGAIN . . . . . . . . . . .  	L NEAR	0005	_TEXT
+READ_DIGIT . . . . . . . . . . .  	L NEAR	0036	_TEXT
+RESULT . . . . . . . . . . . . .  	L WORD	00AA	_DATA
+
+START  . . . . . . . . . . . . .  	L NEAR	0000	_TEXT
+SUM_LOOP . . . . . . . . . . . .  	L NEAR	0064	_TEXT
+
+@CODE  . . . . . . . . . . . . .  	TEXT  _TEXT		
+@CODESIZE  . . . . . . . . . . .  	TEXT  0		
+@DATASIZE  . . . . . . . . . . .  	TEXT  0		
+@FILENAME  . . . . . . . . . . .  	TEXT  S3INPUT		
+
+
+    114 Source  Lines
+    115 Total   Lines
+     29 Symbols
+
+  50870 + 422634 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors
