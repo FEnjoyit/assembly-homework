@@ -1,0 +1,58 @@
+{
+  "status": "PASS",
+  "passed": 271,
+  "total": 271,
+  "table_terms": 45,
+  "checker_cells": 81,
+  "checker_error_coordinates": [
+    [
+      1,
+      1
+    ],
+    [
+      2,
+      3
+    ],
+    [
+      4,
+      5
+    ],
+    [
+      6,
+      6
+    ],
+    [
+      8,
+      8
+    ]
+  ],
+  "checker_variants": 3,
+  "isolated_cell_cases": 243,
+  "clean_table_cases": 3,
+  "c_main": {
+    "H4CTAB": {
+      "offset": "0010",
+      "bytes": 146
+    },
+    "H4CGLOB": {
+      "offset": "0010",
+      "bytes": 123
+    },
+    "H4CLOC": {
+      "offset": "0010",
+      "bytes": 138
+    }
+  },
+  "sha256": {
+    "src/H4CHK.ASM": "ef55dd841ad81b5242a1fea35ad765d57bbce20f01b5c3169a7e74d187b3be7d",
+    "src/H4CHK.C": "6905bbd800901eb14eced8bb09e3df34bb7e88be47ee7f447a65ee21a77b4287",
+    "src/H4IO.INC": "a614003d3a66f0be996eb1705f1b598492d2aca6a7dbad6b4c8e2bd970c4acbb",
+    "src/H4TAB.ASM": "a1170c535cf5532c826b961e4dbc6f562ffa93feb9b5f0288f33e8cd87df8526",
+    "src/H4TAB.C": "c988b1576542b6d5aa109272fc820fe46e1e83b33388691fb9627eee896347fa",
+    "bin/H4CGLOB.EXE": "bb7da13a4a63d7b9c5dac533398050b9d1443987c2dfdffbb2743ec233e3ed0d",
+    "bin/H4CHK.EXE": "37c078428d4594e4944c4719d7dea58bcffec2474bde13f6779308d430cce098",
+    "bin/H4CLOC.EXE": "c0cb245d34e05d270ef557217028143d4ac9af9ac9ecd41c5f6a814ef9bea120",
+    "bin/H4CTAB.EXE": "28a49176e3efb45e092b27f603c5b47f167df0be854ff3de94f9ac48dfeb4bdf",
+    "bin/H4TAB.EXE": "c6fb95e4286db7eec8d9647ab37e189ab81574b17a5f43a96b95e24ff5c663b0"
+  }
+}

@@ -1,0 +1,196 @@
+Microsoft (R) Macro Assembler Version 5.00                  11/4/26 22:59:45
+                                                             Page     1-1
+
+
+				; Assignment 4, part 2: scan all 81 bytes, repo
+				rt wrong coordinates. 
+				.MODEL SMALL 
+ 0100				.STACK 100H 
+ 0000				.DATA 
+ 0000  78 20 79 0D 0A 24	    HEADER_MSG DB 'x y',13,10,'$' 
+ 0006  20 20 20 65 72 72 6F	    ERROR_MSG  DB '   error',13,10,'$' 
+       72 0D 0A 24		
+ 0011  0D 0A 61 63 63 6F 6D	    DONE_MSG   DB 13,10,'accomplish!',13,10,'$'
+				 
+       70 6C 69 73 68 21 0D	
+       0A 24			
+ 0021  07 02 03 04 05 06 07	    TABLE_DATA DB 7,2,3,4,5,6,7,8,9 
+       08 09			
+ 002A  02 04 07 08 0A 0C 0E	               DB 2,4,7,8,10,12,14,16,18 
+       10 12			
+ 0033  03 06 09 0C 0F 12 15	               DB 3,6,9,12,15,18,21,24,27 
+       18 1B			
+ 003C  04 08 0C 10 07 18 1C	               DB 4,8,12,16,7,24,28,32,36 
+       20 24			
+ 0045  05 0A 0F 14 19 1E 23	               DB 5,10,15,20,25,30,35,40,45 
+       28 2D			
+ 004E  06 0C 12 18 1E 07 2A	               DB 6,12,18,24,30,7,42,48,54 
+       30 36			
+ 0057  07 0E 15 1C 23 2A 31	               DB 7,14,21,28,35,42,49,56,63 
+       38 3F			
+ 0060  08 10 18 20 28 30 38	               DB 8,16,24,32,40,48,56,7,72 
+       07 48			
+ 0069  09 12 1B 24 2D 36 3F	               DB 9,18,27,36,45,54,63,72,81 
+       48 51			
+ 0000				.CODE 
+ 0000				START: 
+ 0000  B8 ---- R		    MOV AX,@DATA 
+ 0003  8E D8			    MOV DS,AX 
+ 0005  8D 16 0000 R		    LEA DX,HEADER_MSG 
+ 0009  B4 09			    MOV AH,09H 
+ 000B  CD 21			    INT 21H 
+ 000D  BB 0001			    MOV BX,1 
+ 0010  33 FF			    XOR DI,DI 
+ 0012				ROW_LOOP: 
+ 0012  B9 0009			    MOV CX,9 
+ 0015  BE 0001			    MOV SI,1 
+ 0018				COL_LOOP: 
+ 0018  E8 0032 R		    CALL CHECK_CELL 
+ 001B				CELL_RETURN: 
+ 001B  47			    INC DI 
+ 001C  46			    INC SI 
+ 001D  E2 F9			    LOOP COL_LOOP 
+ 001F  43			    INC BX 
+ 0020  83 FB 09			    CMP BX,9 
+ 0023  76 ED			    JBE ROW_LOOP 
+ 0025  8D 16 0011 R		    LEA DX,DONE_MSG 
+ 0029  B4 09			    MOV AH,09H 
+ 002B  CD 21			    INT 21H 
+Microsoft (R) Macro Assembler Version 5.00                  11/4/26 22:59:45
+                                                             Page     1-2
+
+
+ 002D  B8 4C00			    MOV AX,4C00H 
+ 0030  CD 21			    INT 21H 
+				 
+				; BX = row, SI = column, DI = zero-based row-ma
+				jor index, CX = loop count. 
+ 0032				CHECK_CELL PROC NEAR 
+ 0032  50			    PUSH AX 
+ 0033  52			    PUSH DX 
+ 0034  8B C6			    MOV AX,SI 
+ 0036  F6 E3			    MUL BL 
+ 0038  3A 85 0021 R		    CMP AL,TABLE_DATA[DI] 
+ 003C  74 17			    JE CELL_DONE 
+ 003E  8B C3			    MOV AX,BX 
+ 0040  E8 005F R		    CALL PRINT_DEC 
+ 0043  B2 20			    MOV DL,' ' 
+ 0045  E8 0058 R		    CALL PUT_CHAR 
+ 0048  8B C6			    MOV AX,SI 
+ 004A  E8 005F R		    CALL PRINT_DEC 
+ 004D  8D 16 0006 R		    LEA DX,ERROR_MSG 
+ 0051  B4 09			    MOV AH,09H 
+ 0053  CD 21			    INT 21H 
+ 0055				CELL_DONE: 
+ 0055  5A			    POP DX 
+ 0056  58			    POP AX 
+ 0057  C3			    RET 
+ 0058				CHECK_CELL ENDP 
+				INCLUDE H4IO.INC 
+			     C	; Output a DOS character in DL; preserve AX. 
+ 0058                        C	PUT_CHAR PROC NEAR 
+ 0058  50                    C	    PUSH AX 
+ 0059  B4 02                 C	    MOV AH,02H 
+ 005B  CD 21                 C	    INT 21H 
+ 005D  58                    C	    POP AX 
+ 005E  C3                    C	    RET 
+ 005F                        C	PUT_CHAR ENDP 
+			     C	 
+			     C	; Output AX in decimal; preserve AX, BX, CX and
+				 DX. 
+ 005F                        C	PRINT_DEC PROC NEAR 
+ 005F  50                    C	    PUSH AX 
+ 0060  53                    C	    PUSH BX 
+ 0061  51                    C	    PUSH CX 
+ 0062  52                    C	    PUSH DX 
+ 0063  BB 000A               C	    MOV BX,10 
+ 0066  33 C9                 C	    XOR CX,CX 
+ 0068                        C	PD_DIVIDE: 
+ 0068  33 D2                 C	    XOR DX,DX 
+ 006A  F7 F3                 C	    DIV BX 
+ 006C  52                    C	    PUSH DX 
+ 006D  41                    C	    INC CX 
+ 006E  0B C0                 C	    OR AX,AX 
+ 0070  75 F6                 C	    JNZ PD_DIVIDE 
+ 0072                        C	PD_WRITE: 
+ 0072  5A                    C	    POP DX 
+Microsoft (R) Macro Assembler Version 5.00                  11/4/26 22:59:45
+                                                             Page     1-3
+
+
+ 0073  80 C2 30              C	    ADD DL,'0' 
+ 0076  E8 0058 R             C	    CALL PUT_CHAR 
+ 0079  E2 F7                 C	    LOOP PD_WRITE 
+ 007B  5A                    C	    POP DX 
+ 007C  59                    C	    POP CX 
+ 007D  5B                    C	    POP BX 
+ 007E  58                    C	    POP AX 
+ 007F  C3                    C	    RET 
+ 0080                        C	PRINT_DEC ENDP 
+			     C	 
+ 0080                        C	NEWLINE PROC NEAR 
+ 0080  52                    C	    PUSH DX 
+ 0081  B2 0D                 C	    MOV DL,13 
+ 0083  E8 0058 R             C	    CALL PUT_CHAR 
+ 0086  B2 0A                 C	    MOV DL,10 
+ 0088  E8 0058 R             C	    CALL PUT_CHAR 
+ 008B  5A                    C	    POP DX 
+ 008C  C3                    C	    RET 
+ 008D                        C	NEWLINE ENDP 
+				 
+ 008D				END START 
+Microsoft (R) Macro Assembler Version 5.00                  11/4/26 22:59:45
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+DGROUP . . . . . . . . . . . . .  	GROUP
+  _DATA  . . . . . . . . . . . .  	0072	WORD	PUBLIC	'DATA'
+  STACK  . . . . . . . . . . . .  	0100	PARA	STACK	'STACK'
+_TEXT  . . . . . . . . . . . . .  	008D	WORD	PUBLIC	'CODE'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+CELL_DONE  . . . . . . . . . . .  	L NEAR	0055	_TEXT
+CELL_RETURN  . . . . . . . . . .  	L NEAR	001B	_TEXT
+CHECK_CELL . . . . . . . . . . .  	N PROC	0032	_TEXT	Length = 0026
+COL_LOOP . . . . . . . . . . . .  	L NEAR	0018	_TEXT
+
+DONE_MSG . . . . . . . . . . . .  	L BYTE	0011	_DATA
+
+ERROR_MSG  . . . . . . . . . . .  	L BYTE	0006	_DATA
+
+HEADER_MSG . . . . . . . . . . .  	L BYTE	0000	_DATA
+
+NEWLINE  . . . . . . . . . . . .  	N PROC	0080	_TEXT	Length = 000D
+
+PD_DIVIDE  . . . . . . . . . . .  	L NEAR	0068	_TEXT
+PD_WRITE . . . . . . . . . . . .  	L NEAR	0072	_TEXT
+PRINT_DEC  . . . . . . . . . . .  	N PROC	005F	_TEXT	Length = 0021
+PUT_CHAR . . . . . . . . . . . .  	N PROC	0058	_TEXT	Length = 0007
+
+ROW_LOOP . . . . . . . . . . . .  	L NEAR	0012	_TEXT
+
+START  . . . . . . . . . . . . .  	L NEAR	0000	_TEXT
+
+TABLE_DATA . . . . . . . . . . .  	L BYTE	0021	_DATA
+
+@CODE  . . . . . . . . . . . . .  	TEXT  _TEXT		
+@CODESIZE  . . . . . . . . . . .  	TEXT  0		
+@DATASIZE  . . . . . . . . . . .  	TEXT  0		
+@FILENAME  . . . . . . . . . . .  	TEXT  H4CHK		
+
+
+    112 Source  Lines
+    113 Total   Lines
+     29 Symbols
+
+  50926 + 422578 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

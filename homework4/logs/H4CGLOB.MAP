@@ -1,0 +1,262 @@
+Open Watcom Linker Version 2.0beta1 Limited Availability
+Portions Copyright (c) 1985-2002 Sybase, Inc. All Rights Reserved.
+Created on:       26/11/04 22:59:48
+Executable Image: H4CGLOB.EXE
+creating a DOS executable
+
+
+                        +------------+
+                        |   Groups   |
+                        +------------+
+
+Group                           Address              Size
+=====                           =======              ====
+
+DGROUP                          0203:0000            00000bd0
+
+
+
+                        +--------------+
+                        |   Segments   |
+                        +--------------+
+
+Segment                Class          Group          Address         Size
+=======                =====          =====          =======         ====
+
+BEGTEXT                CODE           AUTO           0000:0000       00000007
+_TEXT                  CODE           AUTO           0000:0010       00002020
+FAR_DATA               FAR_DATA       AUTO           0203:0000       00000000
+_NULL                  BEGDATA        DGROUP         0203:0000       00000020
+_AFTERNULL             BEGDATA        DGROUP         0205:0000       00000002
+CONST                  DATA           DGROUP         0205:0002       00000096
+CONST2                 DATA           DGROUP         020e:0008       00000000
+_DATA                  DATA           DGROUP         020e:0008       000001ee
+XIB                    DATA           DGROUP         022d:0006       00000000
+XI                     DATA           DGROUP         022d:0006       0000000c
+XIE                    DATA           DGROUP         022e:0002       00000000
+YIB                    DATA           DGROUP         022e:0002       00000000
+YI                     DATA           DGROUP         022e:0002       00000006
+YIE                    DATA           DGROUP         022e:0008       00000000
+STRINGS                DATA           DGROUP         022e:0008       00000000
+DATA                   DATA           DGROUP         022e:0008       00000000
+_BSS                   BSS            DGROUP         022e:0008       00000112
+STACK                  STACK          DGROUP         0240:0000       00000800
+
+
+                        +----------------+
+                        |   Memory Map   |
+                        +----------------+
+
+* = unreferenced symbol
++ = symbol only referenced locally
+
+Address        Symbol
+=======        ======
+
+Module: H4CGLOB.OBJ(D:\Homework\6\HUI\dos\work\H4CHK.C)
+0000:0010      main_
+0203:00b8+     _table
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(puts.c)
+0000:008b      puts_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(printf.c)
+0000:00b1      printf_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(cstart)
+0000:0003*     ___begtext
+0203:0000*     __nullarea
+0000:00d2      _cstart_
+0000:01a7*     _Not_Enough_Memory_
+0000:02d2      __exit_
+0000:02f1      __do_exit_with_msg__
+0000:0334      __GETDS
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(cmodel)
+0000:033e      _small_code_
+0000:033e*     CodeModelMismatch
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(iob.c)
+0203:010a      ___iob
+0203:02b8      ___OpenStreams
+0203:02ba      ___ClosedStreams
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(fputs.c)
+0000:033e      fputs_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(fputc.c)
+0000:03b5      fputc_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(fprtf.c)
+0000:046a      __fprtf_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(xmsg.c)
+0000:0501*     __exit_with_msg_
+0000:0504      __fatal_runtime_error_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(cmain086.c)
+0000:051e      __CMain
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(initrtns.c)
+0000:056f*     __FInitRtns
+0000:0573      __InitRtns
+0000:05ce*     __FFiniRtns
+0000:05d2      __FiniRtns
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(crwdata)
+0203:0222      __curbrk
+0203:022a      __STACKLOW
+0203:022c      __STACKTOP
+0203:022e      __cbyte
+0203:0230      __child
+0203:0232      __no87
+0203:0240      ___FPE_handler
+0203:0224      __psp
+0203:0234      __get_ovl_stack
+0203:0238      __restore_ovl_stack
+0203:023c      __close_ovl_file
+0203:0244      __LpCmdLine
+0203:0248      __LpPgmName
+0203:0226      __osmajor
+0203:0227      __osminor
+0203:0228      __osmode
+0203:0229      __HShift
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(uselfn.c)
+0203:024c      ___uselfn
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(dosseg)
+0000:0636      __DOSseg__
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(initfile.c)
+0000:0637      __InitFiles_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(ioexit.c)
+0000:06f9*     fcloseall_
+0000:06fe      __full_io_exit_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(flush.c)
+0000:0706      __flush_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(ioalloc.c)
+0000:07ef      __ioalloc_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(seterrno.c)
+0000:085b      __set_errno_
+0000:0869*     __set_EDOM_
+0000:0875*     __set_ERANGE_
+0000:0881*     __set_EINVAL_
+0000:0890      __set_doserrno_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(prtf.c)
+0000:0899      __prtf_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(enterdb.c)
+0000:13fe      __EnterWVIDEO_
+0203:024e+     ___WD_Present
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(___argc.c)
+0203:02bc      ____Argc
+0203:02be      ____Argv
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(amblksiz.c)
+0203:0250      __amblksiz
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(exit.c)
+0000:141a+     __null_int23_exit_
+0000:141b      exit_
+0000:1439*     _exit_
+0203:0252+     ___int23_exit
+0203:0254+     ___FPE_handler_exit
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(sgdef086)
+0203:02a6      __Start_XI
+0203:02b2      __End_XI
+0203:02b2      __Start_YI
+0203:02b8      __End_YI
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(nmalloc.c)
+0000:144a      _nmalloc_
+0000:144a      malloc_
+0203:0256      ___nheapbeg
+0203:0258      ___MiniHeapRover
+0203:025a      ___LargestSizeB4MiniHeapRover
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(fclose.c)
+0000:1503+     __doclose_
+0000:1584      __shutdown_stream_
+0000:1595*     fclose_
+0203:02c0+     ___RmTmpFileFn
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(freefp.c)
+0000:15b7      __freefp_
+0000:15e4      __purgefp_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(__lseek.c)
+0000:1608      __lseek_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(qwrit.c)
+0000:1640      __qwrite_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(fsync.c)
+0000:1696      fsync_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(chktty.c)
+0000:1699      __chktty_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(errno.c)
+0000:16be      __get_errno_ptr_
+0000:16c2      __get_doserrno_ptr_
+0203:02c2+     _errno
+0203:02c4+     __doserrno
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(wctomb.c)
+0000:16c6      wctomb_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(itoa.c)
+0000:16e3+     utoa_
+0000:1728      itoa_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(i4m)
+0000:1744*     __I4M
+0000:1744      __U4M
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(strupr.c)
+0000:175c      strupr_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(noefgfmt.c)
+0203:025c      ___EFG_printf
+0203:025e*     ___EFG_scanf
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(mbisdbcs.c)
+0203:0260      ___IsDBCS
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(mbislead.c)
+0000:178c*     _ismbblead_
+0203:02c6      ___MBCSIsTable
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(lltoa.c)
+0000:17a1      ulltoa_
+0000:1866*     lltoa_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(ltoa.c)
+0000:18b9      ultoa_
+0000:190c*     ltoa_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(nmemneed.c)
+0000:192c      __nmemneed_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(mem.c)
+0000:1930      __MemAllocator
+0000:19fa      __MemFree
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(grownear.c)
+0000:1bc3+     __LastFree_
+0000:1c2a      __ExpandDGROUP_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(_clse.c)
+0000:1d04      __close_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(nfree.c)
+0000:1d33      _nfree_
+0000:1d33      free_
+0203:03c8+     ___MiniHeapFreeRover
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(dosret.c)
+0000:1df4*     _dosretax_
+0000:1df9*     _dosret0_
+0000:1e00      __set_errno_dos_
+0000:1e50*     __set_errno_dos_reterr_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(iomode.c)
+0000:1e5a      __GetIOMode_
+0000:1e71      __SetIOMode_nogrow_
+0203:0276+     ___NFiles
+0203:0278+     ___init_mode
+0203:02a0+     ___io_mode
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(filedos.c)
+0000:1e86*     _dos_close_
+0000:1e92      _dos_commit_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(isatt.c)
+0000:1ea0      isatty_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(alphabet.c)
+0203:0092      ___Alphabet
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(mbinit.c)
+0000:1ef0      __mbinit_
+0203:02a2+     ___MBCodePage
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(heapen.c)
+0000:1fc0*     _heapenable_
+0203:02a4      ___heap_enabled
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(sbrk.c)
+0000:1fcc*     sbrk_
+0000:1fd0      __brk_
+Module: D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib(doserror)
+0000:2024      __doserror_
+
+
+                        +--------------------+
+                        |   Libraries Used   |
+                        +--------------------+
+
+D:\Homework\6\HUI\tools\watcom/lib286/dos\clibs.lib
+
+
+                        +-----------------------+
+                        |   Linker Statistics   |
+                        +-----------------------+
+
+Stack size:  0800 (2048.)
+Memory size:  2c00 (11264.)
+Entry point address: 0000:00d2
+Link time: 00:00.15

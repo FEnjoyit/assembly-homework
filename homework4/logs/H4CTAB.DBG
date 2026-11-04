@@ -1,0 +1,86 @@
+-r
+AX=0000 BX=0000 CX=402F DX=0000 SP=0800 BP=0000 SI=0000 DI=0000 
+DS=0DF0 ES=0DF0 SS=1041 CS=0E00 IP=012C NV UP EI PL ZR NA PE NC 
+0E00:012C E98A00            JMP     01B9
+-u cs:0010 l92
+0E00:0010 53                PUSH    BX
+0E00:0011 51                PUSH    CX
+0E00:0012 52                PUSH    DX
+0E00:0013 56                PUSH    SI
+0E00:0014 57                PUSH    DI
+0E00:0015 55                PUSH    BP
+0E00:0016 89E5              MOV     BP,SP
+0E00:0018 81EC0A00          SUB     SP,000A
+0E00:001C B82200            MOV     AX,0022
+0E00:001F E88000            CALL    00A2
+0E00:0022 C746FA0900        MOV     WORD PTR [BP-06],0009
+0E00:0027 837EFA00          CMP     WORD PTR [BP-06],+00
+0E00:002B 7464              JZ      0091
+0E00:002D C746FC0100        MOV     WORD PTR [BP-04],0001
+0E00:0032 8B46FC            MOV     AX,[BP-04]
+0E00:0035 3B46FA            CMP     AX,[BP-06]
+0E00:0038 774B              JA      0085
+0E00:003A 8B46FA            MOV     AX,[BP-06]
+0E00:003D F766FC            MUL     WORD PTR [BP-04]
+0E00:0040 8946FE            MOV     [BP-02],AX
+0E00:0043 8B46FE            MOV     AX,[BP-02]
+0E00:0046 50                PUSH    AX
+0E00:0047 8B46FC            MOV     AX,[BP-04]
+0E00:004A 50                PUSH    AX
+0E00:004B 8B46FA            MOV     AX,[BP-06]
+0E00:004E 50                PUSH    AX
+0E00:004F B83300            MOV     AX,0033
+0E00:0052 50                PUSH    AX
+0E00:0053 E87200            CALL    00C8
+0E00:0056 83C408            ADD     SP,+08
+0E00:0059 8B46FC            MOV     AX,[BP-04]
+0E00:005C 3B46FA            CMP     AX,[BP-06]
+0E00:005F 741F              JZ      0080
+0E00:0061 837EFE0A          CMP     WORD PTR [BP-02],+0A
+0E00:0065 7307              JAE     006E
+0E00:0067 C746F63C00        MOV     WORD PTR [BP-0A],003C
+0E00:006C EB05              JMP     0073
+0E00:006E C746F64000        MOV     WORD PTR [BP-0A],0040
+0E00:0073 FF76F6            PUSH    WORD PTR [BP-0A]
+0E00:0076 B84300            MOV     AX,0043
+0E00:0079 50                PUSH    AX
+0E00:007A E84B00            CALL    00C8
+0E00:007D 83C404            ADD     SP,+04
+0E00:0080 FF46FC            INC     WORD PTR [BP-04]
+0E00:0083 EBAD              JMP     0032
+0E00:0085 B80A00            MOV     AX,000A
+0E00:0088 E85D00            CALL    00E8
+0E00:008B 8346FAFF          ADD     WORD PTR [BP-06],-01
+0E00:008F EB96              JMP     0027
+0E00:0091 C746F80000        MOV     WORD PTR [BP-08],0000
+0E00:0096 8B46F8            MOV     AX,[BP-08]
+0E00:0099 89EC              MOV     SP,BP
+0E00:009B 5D                POP     BP
+0E00:009C 5F                POP     DI
+0E00:009D 5E                POP     SI
+0E00:009E 5A                POP     DX
+0E00:009F 59                POP     CX
+0E00:00A0 5B                POP     BX
+0E00:00A1 C3                RET
+-g 0010
+AX=0000 BX=0B80 CX=0000 DX=0000 SP=0B7A BP=0000 SI=0382 DI=037C 
+DS=1009 ES=0DF0 SS=1009 CS=0E00 IP=0010 NV UP EI PL ZR NA PE NC 
+0E00:0010 53                PUSH    BX
+-r
+AX=0000 BX=0B80 CX=0000 DX=0000 SP=0B7A BP=0000 SI=0382 DI=037C 
+DS=1009 ES=0DF0 SS=1009 CS=0E00 IP=0010 NV UP EI PL ZR NA PE NC 
+0E00:0010 53                PUSH    BX
+-g
+The 9mul9 table:
+9*1=9   9*2=18  9*3=27  9*4=36  9*5=45  9*6=54  9*7=63  9*8=72  9*9=81
+8*1=8   8*2=16  8*3=24  8*4=32  8*5=40  8*6=48  8*7=56  8*8=64
+7*1=7   7*2=14  7*3=21  7*4=28  7*5=35  7*6=42  7*7=49
+6*1=6   6*2=12  6*3=18  6*4=24  6*5=30  6*6=36
+5*1=5   5*2=10  5*3=15  5*4=20  5*5=25
+4*1=4   4*2=8   4*3=12  4*4=16
+3*1=3   3*2=6   3*3=9
+2*1=2   2*2=4
+1*1=1
+
+Program terminated normally (0000)
+-q

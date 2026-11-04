@@ -1,0 +1,176 @@
+Microsoft (R) Macro Assembler Version 5.00                  11/4/26 22:59:45
+                                                             Page     1-1
+
+
+				; Assignment 4, part 1: descending triangular m
+				ultiplication table. 
+				.MODEL SMALL 
+ 0100				.STACK 100H 
+ 0000				.DATA 
+ 0000  54 68 65 20 39 6D 75	    TITLE_MSG DB 'The 9mul9 table:',13,10,'$' 
+       6C 39 20 74 61 62 6C	
+       65 3A 0D 0A 24		
+ 0000				.CODE 
+ 0000				START: 
+ 0000  B8 ---- R		    MOV AX,@DATA 
+ 0003  8E D8			    MOV DS,AX 
+ 0005  8D 16 0000 R		    LEA DX,TITLE_MSG 
+ 0009  B4 09			    MOV AH,09H 
+ 000B  CD 21			    INT 21H 
+ 000D  BB 0009			    MOV BX,9 
+ 0010				ROW_LOOP: 
+ 0010  8B CB			    MOV CX,BX 
+ 0012  BE 0001			    MOV SI,1 
+ 0015				COL_LOOP: 
+ 0015  E8 0026 R		    CALL PRINT_TERM 
+ 0018				TERM_RETURN: 
+ 0018  46			    INC SI 
+ 0019  E2 FA			    LOOP COL_LOOP 
+ 001B  E8 0085 R		    CALL NEWLINE 
+ 001E  4B			    DEC BX 
+ 001F  75 EF			    JNZ ROW_LOOP 
+ 0021  B8 4C00			    MOV AX,4C00H 
+ 0024  CD 21			    INT 21H 
+				 
+				; BX = row, SI = column, CX = number of remaini
+				ng terms in row. 
+				; Borrow CX for the padding loop and restore it
+				 before RET. 
+ 0026				PRINT_TERM PROC NEAR 
+ 0026  50			    PUSH AX 
+ 0027  51			    PUSH CX 
+ 0028  52			    PUSH DX 
+ 0029  8B C3			    MOV AX,BX 
+ 002B  E8 0064 R		    CALL PRINT_DEC 
+ 002E  B2 2A			    MOV DL,'*' 
+ 0030  E8 005D R		    CALL PUT_CHAR 
+ 0033  8B C6			    MOV AX,SI 
+ 0035  E8 0064 R		    CALL PRINT_DEC 
+ 0038  B2 3D			    MOV DL,'=' 
+ 003A  E8 005D R		    CALL PUT_CHAR 
+ 003D  8B C6			    MOV AX,SI 
+ 003F  F6 E3			    MUL BL 
+ 0041  E8 0064 R		    CALL PRINT_DEC 
+ 0044  83 F9 01			    CMP CX,1 
+ 0047  74 10			    JE TERM_DONE 
+ 0049  B9 0002			    MOV CX,2 
+ 004C  3D 000A			    CMP AX,10 
+ 004F  73 01			    JAE TERM_PAD 
+Microsoft (R) Macro Assembler Version 5.00                  11/4/26 22:59:45
+                                                             Page     1-2
+
+
+ 0051  41			    INC CX 
+ 0052				TERM_PAD: 
+ 0052  B2 20			    MOV DL,' ' 
+ 0054  E8 005D R		    CALL PUT_CHAR 
+ 0057  E2 F9			    LOOP TERM_PAD 
+ 0059				TERM_DONE: 
+ 0059  5A			    POP DX 
+ 005A  59			    POP CX 
+ 005B  58			    POP AX 
+ 005C  C3			    RET 
+ 005D				PRINT_TERM ENDP 
+				INCLUDE H4IO.INC 
+			     C	; Output a DOS character in DL; preserve AX. 
+ 005D                        C	PUT_CHAR PROC NEAR 
+ 005D  50                    C	    PUSH AX 
+ 005E  B4 02                 C	    MOV AH,02H 
+ 0060  CD 21                 C	    INT 21H 
+ 0062  58                    C	    POP AX 
+ 0063  C3                    C	    RET 
+ 0064                        C	PUT_CHAR ENDP 
+			     C	 
+			     C	; Output AX in decimal; preserve AX, BX, CX and
+				 DX. 
+ 0064                        C	PRINT_DEC PROC NEAR 
+ 0064  50                    C	    PUSH AX 
+ 0065  53                    C	    PUSH BX 
+ 0066  51                    C	    PUSH CX 
+ 0067  52                    C	    PUSH DX 
+ 0068  BB 000A               C	    MOV BX,10 
+ 006B  33 C9                 C	    XOR CX,CX 
+ 006D                        C	PD_DIVIDE: 
+ 006D  33 D2                 C	    XOR DX,DX 
+ 006F  F7 F3                 C	    DIV BX 
+ 0071  52                    C	    PUSH DX 
+ 0072  41                    C	    INC CX 
+ 0073  0B C0                 C	    OR AX,AX 
+ 0075  75 F6                 C	    JNZ PD_DIVIDE 
+ 0077                        C	PD_WRITE: 
+ 0077  5A                    C	    POP DX 
+ 0078  80 C2 30              C	    ADD DL,'0' 
+ 007B  E8 005D R             C	    CALL PUT_CHAR 
+ 007E  E2 F7                 C	    LOOP PD_WRITE 
+ 0080  5A                    C	    POP DX 
+ 0081  59                    C	    POP CX 
+ 0082  5B                    C	    POP BX 
+ 0083  58                    C	    POP AX 
+ 0084  C3                    C	    RET 
+ 0085                        C	PRINT_DEC ENDP 
+			     C	 
+ 0085                        C	NEWLINE PROC NEAR 
+ 0085  52                    C	    PUSH DX 
+ 0086  B2 0D                 C	    MOV DL,13 
+ 0088  E8 005D R             C	    CALL PUT_CHAR 
+ 008B  B2 0A                 C	    MOV DL,10 
+Microsoft (R) Macro Assembler Version 5.00                  11/4/26 22:59:45
+                                                             Page     1-3
+
+
+ 008D  E8 005D R             C	    CALL PUT_CHAR 
+ 0090  5A                    C	    POP DX 
+ 0091  C3                    C	    RET 
+ 0092                        C	NEWLINE ENDP 
+				 
+ 0092				END START 
+Microsoft (R) Macro Assembler Version 5.00                  11/4/26 22:59:45
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+DGROUP . . . . . . . . . . . . .  	GROUP
+  _DATA  . . . . . . . . . . . .  	0013	WORD	PUBLIC	'DATA'
+  STACK  . . . . . . . . . . . .  	0100	PARA	STACK	'STACK'
+_TEXT  . . . . . . . . . . . . .  	0092	WORD	PUBLIC	'CODE'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+COL_LOOP . . . . . . . . . . . .  	L NEAR	0015	_TEXT
+
+NEWLINE  . . . . . . . . . . . .  	N PROC	0085	_TEXT	Length = 000D
+
+PD_DIVIDE  . . . . . . . . . . .  	L NEAR	006D	_TEXT
+PD_WRITE . . . . . . . . . . . .  	L NEAR	0077	_TEXT
+PRINT_DEC  . . . . . . . . . . .  	N PROC	0064	_TEXT	Length = 0021
+PRINT_TERM . . . . . . . . . . .  	N PROC	0026	_TEXT	Length = 0037
+PUT_CHAR . . . . . . . . . . . .  	N PROC	005D	_TEXT	Length = 0007
+
+ROW_LOOP . . . . . . . . . . . .  	L NEAR	0010	_TEXT
+
+START  . . . . . . . . . . . . .  	L NEAR	0000	_TEXT
+
+TERM_DONE  . . . . . . . . . . .  	L NEAR	0059	_TEXT
+TERM_PAD . . . . . . . . . . . .  	L NEAR	0052	_TEXT
+TERM_RETURN  . . . . . . . . . .  	L NEAR	0018	_TEXT
+TITLE_MSG  . . . . . . . . . . .  	L BYTE	0000	_DATA
+
+@CODE  . . . . . . . . . . . . .  	TEXT  _TEXT		
+@CODESIZE  . . . . . . . . . . .  	TEXT  0		
+@DATASIZE  . . . . . . . . . . .  	TEXT  0		
+@FILENAME  . . . . . . . . . . .  	TEXT  H4TAB		
+
+
+    107 Source  Lines
+    108 Total   Lines
+     27 Symbols
+
+  51076 + 422428 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors
