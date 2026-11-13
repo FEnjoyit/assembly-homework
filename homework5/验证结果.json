@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "passed": 255,
+  "total": 255,
+  "input_cases": 222,
+  "trace_events": 18,
+  "f100": "354224848179261915075",
+  "stack_high_water_asm_bytes": 1002,
+  "stack_asm_declared_bytes": 4096,
+  "stack_c_header_sp": 4096,
+  "stack_high_water_c_fib_bytes": 3400,
+  "stack_c_sp_before_call": "1AD8",
+  "stack_c_min_observed_sp": "0D90",
+  "trace_offsets": {
+    "root": "0058",
+    "left": "0095",
+    "right": "009E",
+    "entry": "007A",
+    "ret": "00D0"
+  },
+  "c_fib": {
+    "offset": "0010",
+    "bytes": 203
+  },
+  "c_main": {
+    "offset": "0212",
+    "bytes": 93
+  },
+  "sha256": {
+    "src/H5BUILD.BAT": "72c604b05f6a17234feb0dbf2f93c1bf54ab1a95768081303cb128a52d715aa4",
+    "src/H5CFIB.C": "320e4712358442fef3bc319c86cca6ee8ee135937ad0ad5f24e540ac576b9e35",
+    "src/H5FIB.ASM": "92957179d5e060fe9e5b35953e83a5a7b8033ba7d8c0981759213f7c4297396c",
+    "bin/H5CFIB.EXE": "981653f1ef1651c2e3b80ead023740a592137eed5a10173d9b043bcecd6d282b",
+    "bin/H5FIB.EXE": "43de00f09cee05ed38fda2fbff26559f9d36a6a92292e6e8851dc20056352ab3"
+  }
+}

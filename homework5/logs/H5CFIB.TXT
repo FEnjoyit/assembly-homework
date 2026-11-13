@@ -1,0 +1,629 @@
+Module: D:\Homework\6\HUI\dos\work\H5CFIB.C
+GROUP: 'DGROUP' CONST,CONST2,_DATA
+
+Segment: _TEXT BYTE USE16 0000025F bytes
+
+#include <stdio.h>
+#undef putchar
+
+#define WIDTH 21
+
+static unsigned char ready[101] = {1, 1};
+static unsigned char cache[101][WIDTH] = {{0}, {1}};
+
+/* Digits are stored in ascending place order, one byte per digit. */
+const unsigned char *fib(unsigned int n)
+0000				fib_:
+0000  53				push		bx
+0001  51				push		cx
+0002  52				push		dx
+0003  56				push		si
+0004  57				push		di
+0005  55				push		bp
+0006  89 E5				mov		bp,sp
+0008  81 EC 14 00			sub		sp,0x0014
+000C				L$1:
+000C  89 46 F0				mov		word ptr -0x10[bp],ax
+
+{
+    unsigned char *out = cache[n];
+000F  8B 46 F0				mov		ax,word ptr -0x10[bp]
+0012  BB 15 00				mov		bx,0x0015
+0015  F7 EB				imul		bx
+0017  BB 00 00				mov		bx,offset _cache
+001A  01 C3				add		bx,ax
+001C  89 5E F4				mov		word ptr -0xc[bp],bx
+
+    const unsigned char *left, *right;
+    unsigned int i, sum, carry;
+
+    if (!ready[n]) {
+001F  8B 5E F0				mov		bx,word ptr -0x10[bp]
+0022  80 BF 00 00 00			cmp		byte ptr _ready[bx],0x00
+0027  74 03				je		L$2
+0029  E9 8D 00				jmp		L$11
+
+        left = fib(n - 1);
+002C				L$2:
+002C  8B 46 F0				mov		ax,word ptr -0x10[bp]
+002F  48				dec		ax
+0030  E8 00 00				call		fib_
+0033  89 46 F6				mov		word ptr -0xa[bp],ax
+
+        right = fib(n - 2);
+0036  8B 46 F0				mov		ax,word ptr -0x10[bp]
+0039  2D 02 00				sub		ax,0x0002
+003C  E8 00 00				call		fib_
+003F  89 46 F8				mov		word ptr -0x8[bp],ax
+
+        carry = 0;
+0042  C7 46 FE 00 00			mov		word ptr -0x2[bp],0x0000
+
+        for (i = 0; i < WIDTH; ++i) {
+0047  C7 46 FA 00 00			mov		word ptr -0x6[bp],0x0000
+004C				L$3:
+004C  83 7E FA 15			cmp		word ptr -0x6[bp],0x0015
+0050  73 5F				jae		L$10
+
+            sum = left[i] + right[i] + carry;
+0052				L$4:
+0052  8B 5E F6				mov		bx,word ptr -0xa[bp]
+0055  03 5E FA				add		bx,word ptr -0x6[bp]
+0058  8A 07				mov		al,byte ptr [bx]
+005A  30 E4				xor		ah,ah
+005C  89 C2				mov		dx,ax
+005E  8B 5E F8				mov		bx,word ptr -0x8[bp]
+0061  03 5E FA				add		bx,word ptr -0x6[bp]
+0064  8A 07				mov		al,byte ptr [bx]
+0066  30 E4				xor		ah,ah
+0068  01 D0				add		ax,dx
+006A  8B 56 FE				mov		dx,word ptr -0x2[bp]
+006D  01 C2				add		dx,ax
+006F  89 56 FC				mov		word ptr -0x4[bp],dx
+
+            carry = sum >= 10;
+0072  83 7E FC 0A			cmp		word ptr -0x4[bp],0x000a
+0076  72 07				jb		L$5
+0078  C7 46 EC 01 00			mov		word ptr -0x14[bp],0x0001
+007D  EB 05				jmp		L$6
+007F				L$5:
+007F  C7 46 EC 00 00			mov		word ptr -0x14[bp],0x0000
+0084				L$6:
+0084  8B 46 EC				mov		ax,word ptr -0x14[bp]
+0087  89 46 FE				mov		word ptr -0x2[bp],ax
+
+            out[i] = (unsigned char)(carry ? sum - 10 : sum);
+008A  83 7E FE 00			cmp		word ptr -0x2[bp],0x0000
+008E  74 0B				je		L$7
+0090  8B 46 FC				mov		ax,word ptr -0x4[bp]
+0093  2D 0A 00				sub		ax,0x000a
+0096  89 46 EE				mov		word ptr -0x12[bp],ax
+0099  EB 06				jmp		L$8
+009B				L$7:
+009B  8B 46 FC				mov		ax,word ptr -0x4[bp]
+009E  89 46 EE				mov		word ptr -0x12[bp],ax
+00A1				L$8:
+00A1  8A 46 EE				mov		al,byte ptr -0x12[bp]
+00A4  8B 5E F4				mov		bx,word ptr -0xc[bp]
+00A7  03 5E FA				add		bx,word ptr -0x6[bp]
+00AA  88 07				mov		byte ptr [bx],al
+
+        }
+00AC				L$9:
+00AC  FF 46 FA				inc		word ptr -0x6[bp]
+00AF  EB 9B				jmp		L$3
+
+        ready[n] = 1;
+00B1				L$10:
+00B1  8B 5E F0				mov		bx,word ptr -0x10[bp]
+00B4  C6 87 00 00 01			mov		byte ptr _ready[bx],0x01
+
+    }
+    return out;
+00B9				L$11:
+00B9  8B 5E F4				mov		bx,word ptr -0xc[bp]
+00BC  89 5E F2				mov		word ptr -0xe[bp],bx
+
+}
+00BF  8B 46 F2				mov		ax,word ptr -0xe[bp]
+00C2				L$12:
+00C2  89 EC				mov		sp,bp
+00C4  5D				pop		bp
+00C5  5F				pop		di
+00C6  5E				pop		si
+00C7  5A				pop		dx
+00C8  59				pop		cx
+00C9  5B				pop		bx
+00CA  C3				ret		
+
+
+/* Return -1 for EOF, 0 for an invalid line, or a valid index. */
+static int read_index(void)
+00CB				read_index_:
+00CB  53				push		bx
+00CC  51				push		cx
+00CD  52				push		dx
+00CE  56				push		si
+00CF  57				push		di
+00D0  55				push		bp
+00D1  89 E5				mov		bp,sp
+00D3  81 EC 0C 00			sub		sp,0x000c
+
+{
+    int ch, n = 0, digits = 0, invalid = 0;
+00D7				L$13:
+00D7  C7 46 FA 00 00			mov		word ptr -0x6[bp],0x0000
+00DC  C7 46 FC 00 00			mov		word ptr -0x4[bp],0x0000
+00E1  C7 46 FE 00 00			mov		word ptr -0x2[bp],0x0000
+
+
+    while ((ch = getchar()) != '\n' && ch != EOF) {
+00E6				L$14:
+00E6  83 3E 02 00 00			cmp		word ptr ___iob+0x2,0x0000
+00EB  7E 10				jle		L$15
+00ED  8B 1E 00 00			mov		bx,word ptr ___iob
+00F1  8A 07				mov		al,byte ptr [bx]
+00F3  30 E4				xor		ah,ah
+00F5  2D 0D 00				sub		ax,0x000d
+00F8  3D 0D 00				cmp		ax,0x000d
+00FB  77 0B				ja		L$16
+00FD				L$15:
+00FD  B8 00 00				mov		ax,offset ___iob
+0100  E8 00 00				call		fgetc_
+0103  89 46 F4				mov		word ptr -0xc[bp],ax
+0106  EB 13				jmp		L$17
+0108				L$16:
+0108  FF 0E 02 00			dec		word ptr ___iob+0x2
+010C  8B 1E 00 00			mov		bx,word ptr ___iob
+0110  FF 06 00 00			inc		word ptr ___iob
+0114  8A 07				mov		al,byte ptr [bx]
+0116  30 E4				xor		ah,ah
+0118  89 46 F4				mov		word ptr -0xc[bp],ax
+011B				L$17:
+011B  8B 46 F4				mov		ax,word ptr -0xc[bp]
+011E  89 46 F8				mov		word ptr -0x8[bp],ax
+0121  83 7E F8 0A			cmp		word ptr -0x8[bp],0x000a
+0125  74 06				je		L$18
+0127  83 7E F8 FF			cmp		word ptr -0x8[bp],0xffff
+012B  75 02				jne		L$19
+012D				L$18:
+012D  EB 31				jmp		L$26
+
+        if (ch < '0' || ch > '9' || digits == 3) {
+012F				L$19:
+012F  83 7E F8 30			cmp		word ptr -0x8[bp],0x0030
+0133  7C 06				jl		L$20
+0135  83 7E F8 39			cmp		word ptr -0x8[bp],0x0039
+0139  7E 02				jle		L$21
+013B				L$20:
+013B  EB 06				jmp		L$22
+013D				L$21:
+013D  83 7E FC 03			cmp		word ptr -0x4[bp],0x0003
+0141  75 07				jne		L$24
+
+            invalid = 1;
+0143				L$22:
+0143  C7 46 FE 01 00			mov		word ptr -0x2[bp],0x0001
+
+        } else {
+0148				L$23:
+0148  EB 14				jmp		L$25
+
+            n = n * 10 + ch - '0';
+014A				L$24:
+014A  8B 46 FA				mov		ax,word ptr -0x6[bp]
+014D  BA 0A 00				mov		dx,0x000a
+0150  F7 EA				imul		dx
+0152  03 46 F8				add		ax,word ptr -0x8[bp]
+0155  2D 30 00				sub		ax,0x0030
+0158  89 46 FA				mov		word ptr -0x6[bp],ax
+
+            ++digits;
+015B  FF 46 FC				inc		word ptr -0x4[bp]
+
+        }
+    }
+015E				L$25:
+015E  EB 86				jmp		L$14
+
+    if (ch == EOF && digits == 0 && !invalid)
+0160				L$26:
+0160  83 7E F8 FF			cmp		word ptr -0x8[bp],0xffff
+0164  75 06				jne		L$27
+0166  83 7E FC 00			cmp		word ptr -0x4[bp],0x0000
+016A  74 02				je		L$28
+016C				L$27:
+016C  EB 06				jmp		L$29
+016E				L$28:
+016E  83 7E FE 00			cmp		word ptr -0x2[bp],0x0000
+0172  74 02				je		L$30
+0174				L$29:
+0174  EB 07				jmp		L$31
+
+        return -1;
+0176				L$30:
+0176  C7 46 F6 FF FF			mov		word ptr -0xa[bp],0xffff
+017B  EB 21				jmp		L$36
+
+    if (invalid || n < 1 || n > 100)
+017D				L$31:
+017D  83 7E FE 00			cmp		word ptr -0x2[bp],0x0000
+0181  75 06				jne		L$32
+0183  83 7E FA 01			cmp		word ptr -0x6[bp],0x0001
+0187  7D 02				jge		L$33
+0189				L$32:
+0189  EB 06				jmp		L$34
+018B				L$33:
+018B  83 7E FA 64			cmp		word ptr -0x6[bp],0x0064
+018F  7E 07				jle		L$35
+
+        return 0;
+0191				L$34:
+0191  C7 46 F6 00 00			mov		word ptr -0xa[bp],0x0000
+0196  EB 06				jmp		L$36
+
+    return n;
+0198				L$35:
+0198  8B 46 FA				mov		ax,word ptr -0x6[bp]
+019B  89 46 F6				mov		word ptr -0xa[bp],ax
+
+}
+019E				L$36:
+019E  8B 46 F6				mov		ax,word ptr -0xa[bp]
+01A1				L$37:
+01A1  89 EC				mov		sp,bp
+01A3  5D				pop		bp
+01A4  5F				pop		di
+01A5  5E				pop		si
+01A6  5A				pop		dx
+01A7  59				pop		cx
+01A8  5B				pop		bx
+01A9  C3				ret		
+
+
+static void print_digits(const unsigned char *digits)
+01AA				print_digits_:
+01AA  53				push		bx
+01AB  51				push		cx
+01AC  52				push		dx
+01AD  56				push		si
+01AE  57				push		di
+01AF  55				push		bp
+01B0  89 E5				mov		bp,sp
+01B2  81 EC 06 00			sub		sp,0x0006
+01B6				L$38:
+01B6  89 46 FA				mov		word ptr -0x6[bp],ax
+
+{
+    int i = WIDTH - 1;
+01B9  C7 46 FE 14 00			mov		word ptr -0x2[bp],0x0014
+
+    while (i > 0 && digits[i] == 0)
+01BE				L$39:
+01BE  83 7E FE 00			cmp		word ptr -0x2[bp],0x0000
+01C2  7E 0B				jle		L$40
+01C4  8B 5E FA				mov		bx,word ptr -0x6[bp]
+01C7  03 5E FE				add		bx,word ptr -0x2[bp]
+01CA  80 3F 00				cmp		byte ptr [bx],0x00
+01CD  74 02				je		L$41
+01CF				L$40:
+01CF  EB 06				jmp		L$42
+
+        --i;
+01D1				L$41:
+01D1  83 46 FE FF			add		word ptr -0x2[bp],0xffff
+01D5  EB E7				jmp		L$39
+
+    for (; i >= 0; --i)
+01D7				L$42:
+01D7  83 7E FE 00			cmp		word ptr -0x2[bp],0x0000
+01DB  7C 16				jl		L$43
+
+        putchar('0' + digits[i]);
+01DD  8B 5E FA				mov		bx,word ptr -0x6[bp]
+01E0  03 5E FE				add		bx,word ptr -0x2[bp]
+01E3  8A 07				mov		al,byte ptr [bx]
+01E5  30 E4				xor		ah,ah
+01E7  05 30 00				add		ax,0x0030
+01EA  E8 00 00				call		putchar_
+01ED  83 46 FE FF			add		word ptr -0x2[bp],0xffff
+01F1  EB E4				jmp		L$42
+
+    putchar('\n');
+01F3				L$43:
+01F3  B8 0A 00				mov		ax,0x000a
+01F6  E8 00 00				call		putchar_
+
+}
+01F9				L$44:
+01F9  89 EC				mov		sp,bp
+01FB  5D				pop		bp
+01FC  5F				pop		di
+01FD  5E				pop		si
+01FE  5A				pop		dx
+01FF  59				pop		cx
+0200  5B				pop		bx
+0201  C3				ret		
+
+
+int main(void)
+
+Routine Size: 514 bytes,    Routine Base: _TEXT + 0000
+
+0202				main_:
+0202  53				push		bx
+0203  51				push		cx
+0204  52				push		dx
+0205  56				push		si
+0206  57				push		di
+0207  55				push		bp
+0208  89 E5				mov		bp,sp
+020A  81 EC 06 00			sub		sp,0x0006
+
+{
+    int n;
+    const unsigned char *digits;
+    do {
+        puts("Enter n (1-100):");
+020E				L$45:
+020E  B8 00 00				mov		ax,offset DGROUP:L$51
+0211  E8 00 00				call		puts_
+
+        n = read_index();
+0214  E8 00 00				call		read_index_
+0217  89 46 FC				mov		word ptr -0x4[bp],ax
+
+        if (n < 0)
+021A  83 7E FC 00			cmp		word ptr -0x4[bp],0x0000
+021E  7D 07				jge		L$46
+
+            return 1;
+0220  C7 46 FA 01 00			mov		word ptr -0x6[bp],0x0001
+0225  EB 2C				jmp		L$48
+
+        if (n == 0)
+0227				L$46:
+0227  83 7E FC 00			cmp		word ptr -0x4[bp],0x0000
+022B  75 06				jne		L$47
+
+            puts("Invalid input. Enter 1 to 100.");
+022D  B8 11 00				mov		ax,offset DGROUP:L$52
+0230  E8 00 00				call		puts_
+
+    } while (n == 0);
+0233				L$47:
+0233  83 7E FC 00			cmp		word ptr -0x4[bp],0x0000
+0237  74 D5				je		L$45
+
+
+    digits = fib((unsigned int)n);
+0239  8B 46 FC				mov		ax,word ptr -0x4[bp]
+023C  E8 00 00				call		fib_
+023F  89 46 FE				mov		word ptr -0x2[bp],ax
+
+    puts("Fibonacci number:");
+0242  B8 30 00				mov		ax,offset DGROUP:L$53
+0245  E8 00 00				call		puts_
+
+    print_digits(digits);
+0248  8B 46 FE				mov		ax,word ptr -0x2[bp]
+024B  E8 00 00				call		print_digits_
+
+    return 0;
+024E  C7 46 FA 00 00			mov		word ptr -0x6[bp],0x0000
+
+}
+0253				L$48:
+0253  8B 46 FA				mov		ax,word ptr -0x6[bp]
+0256				L$49:
+0256  89 EC				mov		sp,bp
+0258  5D				pop		bp
+0259  5F				pop		di
+025A  5E				pop		si
+025B  5A				pop		dx
+025C  59				pop		cx
+025D  5B				pop		bx
+025E  C3				ret		
+025F				L$50:
+
+Routine Size: 93 bytes,    Routine Base: _TEXT + 0202
+
+No disassembly errors
+
+Segment: CONST WORD USE16 00000042 bytes
+0000				L$51:
+0000  45 6E 74 65 72 20 6E 20 28 31 2D 31 30 30 29 3A Enter n (1-100):
+0010  00                                              .
+0011				L$52:
+0011  49 6E 76 61 6C 69 64 20 69 6E 70 75 74 2E 20 45 Invalid input. E
+0021  6E 74 65 72 20 31 20 74 6F 20 31 30 30 2E 00    nter 1 to 100..
+0030				L$53:
+0030  46 69 62 6F 6E 61 63 63 69 20 6E 75 6D 62 65 72 Fibonacci number
+0040  3A 00                                           :.
+
+Segment: CONST2 WORD USE16 00000000 bytes
+
+Segment: _DATA WORD USE16 000008AE bytes
+0000				_ready:
+0000  01 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+0010  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+0020  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+0030  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+0040  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+0050  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+0060  00 00 00 00 00                                  .....
+0065				_cache:
+0065  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+0075  00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 ................
+0085  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+	--- Above line repeats 129 times ---
+08A5  00 00 00 00 00 00 00 00 00                      .........
+
+Segment: .debug_info BYTE USE32 00000380 bytes
+0000				L$54:
+0000  7C 03 00 00 02 00                               |.....
+0006  00 00 00 00                                     DD	offset L$56
+000A  02 06 7F 03 00 00 44 3A 5C 48 6F 6D 65 77 6F 72 ......D:\Homewor
+001A  6B 5C 36 5C 48 55 49 5C 64 6F 73 5C 77 6F 72 6B k\6\HUI\dos\work
+002A  5C 48 35 43 46 49 42 2E 43 00                   \H5CFIB.C.
+0034  00 00 00 00                                     DD	offset L$55
+0038  01 00 56 31 2E 30 20 57 41 54 43 4F 4D 00 00    ..V1.0 WATCOM..
+0047  00 00 00 00                                     DD	offset L$57
+004B  00 00 00 00 02                                  .....
+0050  04 00 00 00                                     DD	offset L$58
+0054  09 63 68 61 72 00 08 01 09 73 69 67 6E 65 64 20 .char....signed 
+0064  63 68 61 72 00 06 01 09 75 6E 73 69 67 6E 65 64 char....unsigned
+0074  20 63 68 61 72 00 08 01 09 73 68 6F 72 74 00 05  char....short..
+0084  02 09 75 6E 73 69 67 6E 65 64 20 73 68 6F 72 74 ..unsigned short
+0094  00 07 02 09 69 6E 74 00 05 02 09 75 6E 73 69 67 ....int....unsig
+00A4  6E 65 64 20 69 6E 74 00 07 02 09 6C 6F 6E 67 00 ned int....long.
+00B4  05 04 09 75 6E 73 69 67 6E 65 64 20 6C 6F 6E 67 ...unsigned long
+00C4  00 07 04 09 5F 5F 69 6E 74 36 34 00 05 08 09 75 ....__int64....u
+00D4  6E 73 69 67 6E 65 64 20 5F 5F 69 6E 74 36 34 00 nsigned __int64.
+00E4  07 08 09 5F 42 6F 6F 6C 00 07 01 18 65 6B 00 00 ..._Bool....ek..
+00F4  00 D3 01 01 03 0A                               ......
+00FA  00 00                                           DW	seg _ready
+00FC  00 00 72 65 61 64 79 00 03 03                   ..ready...
+0106  00 00                                           DW	offset _ready
+0108  EF 00 00 00 18 15 6B 00 00 00 18 65 0C 01 00 00 ......k....e....
+0118  D3 01 01 03 0A                                  .....
+011D  00 00                                           DW	seg _cache
+011F  00 00 63 61 63 68 65 00 03 03                   ..cache...
+0129  00 00                                           DW	offset _cache
+012B  12 01 00 00 10 01 6B 00 00 00 88 01 02 02 00 00 ......k.........
+013B  01 2F 01 00 00 0C 03 0A                         ./......
+0143  00 00                                           DW	seg fib_
+0145  66 69 62 00 01 00 01 01 00 00 02 91 0C          fib..........
+0152  00 00                                           DW	offset fib_
+0154  CB 00                                           DW	offset read_index_
+0156  00 02 90 21 C8 01 6E 00 02 91 70 01 6B 9E 00 00 ...!..n...p.k...
+0166  00 D2 01 01 00 01 2E 72 65 74 75 72 6E 00 01 6B .......return..k
+0176  2F 01 00 00 66 01 02 00 00                      /...f....
+017F  0C 00                                           DW	offset L$1
+0181  C2 00                                           DW	offset L$12
+0183  10 01 6B 00 00 00 D2 01 01 00 00 6F 75 74 00 02 ..k........out..
+0193  91 74 83 01 00 00 D2 01 01 00 00 6C 65 66 74 00 .t.........left.
+01A3  02 91 76 2F 01 00 00 D2 01 01 00 00 72 69 67 68 ..v/........righ
+01B3  74 00 02 91 78 2F 01 00 00 D2 01 01 00 00 69 00 t...x/........i.
+01C3  02 91 7A 9E 00 00 00 D2 01 01 00 00 73 75 6D 00 ..z.........sum.
+01D3  02 91 7C 9E 00 00 00 D2 01 01 00 00 63 61 72 72 ..|.........carr
+01E3  79 00 02 91 7E 9E 00 00 00 66 00 02 00 00       y...~....f....
+01F1  2C 00                                           DW	offset L$2
+01F3  B9 00                                           DW	offset L$11
+01F5  66 FF 01 00 00                                  f....
+01FA  52 00                                           DW	offset L$4
+01FC  AC 00                                           DW	offset L$9
+01FE  00 00 00 00 88 01 AE 02 00 00 01 97 00 00 00 0C ................
+020E  03 0A                                           ..
+0210  00 00                                           DW	seg read_index_
+0212  72 65 61 64 5F 69 6E 64 65 78 00 00 00 01 01 00 read_index......
+0222  00 02 91 0C                                     ....
+0226  CB 00                                           DW	offset read_index_
+0228  AA 01                                           DW	offset print_digits_
+022A  00 02 90 21 D2 01 01 00 01 2E 72 65 74 75 72 6E ...!......return
+023A  00 01 6B 97 00 00 00 66 AD 02 00 00             ..k....f....
+0246  D7 00                                           DW	offset L$13
+0248  A1 01                                           DW	offset L$37
+024A  D2 01 01 00 00 63 68 00 02 91 78 97 00 00 00 D2 .....ch...x.....
+025A  01 01 00 00 6E 00 02 91 7A 97 00 00 00 D2 01 01 ....n...z.......
+026A  00 00 64 69 67 69 74 73 00 02 91 7C 97 00 00 00 ..digits...|....
+027A  D2 01 01 00 00 69 6E 76 61 6C 69 64 00 02 91 7E .....invalid...~
+028A  97 00 00 00 66 AC 02 00 00                      ....f....
+0293  2F 01                                           DW	offset L$19
+0295  5E 01                                           DW	offset L$25
+0297  66 A1 02 00 00                                  f....
+029C  43 01                                           DW	offset L$22
+029E  48 01                                           DW	offset L$23
+02A0  00 66 AB 02 00 00                               .f....
+02A6  4A 01                                           DW	offset L$24
+02A8  5E 01                                           DW	offset L$25
+02AA  00 00 00 00 09 76 6F 69 64 00 07 00 88 01 0F 03 .....void.......
+02BA  00 00 01 AE 02 00 00 0C 03 0A                   ..........
+02C4  00 00                                           DW	seg print_digits_
+02C6  70 72 69 6E 74 5F 64 69 67 69 74 73 00 00 00 01 print_digits....
+02D6  01 00 00 02 91 0C                               ......
+02DC  AA 01                                           DW	offset print_digits_
+02DE  02 02                                           DW	offset main_
+02E0  00 02 90 21 C8 01 64 69 67 69 74 73 00 02 91 7A ...!..digits...z
+02F0  01 6B 2F 01 00 00 66 0E 03 00 00                .k/...f....
+02FB  B6 01                                           DW	offset L$38
+02FD  F9 01                                           DW	offset L$44
+02FF  D2 01 01 00 00 69 00 02 91 7E 97 00 00 00 00 00 .....i...~......
+030F  88 01 7E 03 00 00 01 97 00 00 00 0C 03 0A       ..~...........
+031D  00 00                                           DW	seg main_
+031F  6D 61 69 6E 00 01 00 01 01 00 00 02 91 0C       main..........
+032D  02 02                                           DW	offset main_
+032F  5F 02                                           DW	offset L$50
+0331  00 02 90 21 D2 01 01 00 01 2E 72 65 74 75 72 6E ...!......return
+0341  00 01 6B 97 00 00 00 66 7D 03 00 00             ..k....f}...
+034D  0E 02                                           DW	offset L$45
+034F  56 02                                           DW	offset L$49
+0351  D2 01 01 00 00 6E 00 02 91 7C 97 00 00 00 D2 01 .....n...|......
+0361  01 00 00 64 69 67 69 74 73 00 02 91 7E 2F 01 00 ...digits...~/..
+0371  00 66 7C 03 00 00                               .f|...
+0377  0E 02                                           DW	offset L$45
+0379  33 02                                           DW	offset L$47
+037B  00 00 00 00 00                                  .....
+
+Segment: .debug_pubnames BYTE USE32 00000023 bytes
+0000  1F 00 00 00 02 00                               ......
+0006  00 00 00 00                                     DD	offset L$54
+000A  5F 02 00 00 35 01 00 00 66 69 62 00 0F 03 00 00 _...5...fib.....
+001A  6D 61 69 6E 00 00 00 00 00                      main.....
+
+Segment: .debug_aranges BYTE USE32 00000024 bytes
+0000  20 00 00 00 02 00                                .....
+0006  00 00 00 00                                     DD	offset L$54
+000A  02 02                                           ..
+000C  00 00                                           DW	offset fib_
+000E  00 00                                           DW	seg fib_
+0010  5F 02                                           _.
+0012  00 00                                           DW	offset DGROUP:L$51
+0014  00 00                                           DW	seg DGROUP:L$51
+0016  42 00                                           B.
+0018  00 00                                           DW	offset DGROUP:_ready
+001A  00 00                                           DW	seg DGROUP:_ready
+001C  AE 08 00 00 00 00 00 00                         ........
+
+Segment: .debug_line BYTE USE32 0000008F bytes
+0000				L$55:
+0000  8B 00 00 00 02 00 10 00 00 00 01 00 FF 04 0A 00 ................
+0010  01 01 01 01 00 00 00 00 00 00 00 28 03 44 3A 5C ...........(.D:\
+0020  48 6F 6D 65 77 6F 72 6B 5C 36 5C 48 55 49 5C 64 Homework\6\HUI\d
+0030  6F 73 5C 77 6F 72 6B 5C 48 35 43 46 49 42 2E 43 os\work\H5CFIB.C
+0040  00 00 00 00 00 03 02                            .......
+0047  00 00                                           DW	offset fib_
+0049  00 03 04                                        ...
+004C  00 00                                           DW	seg fib_
+004E  06 05 01 03 09 01 49 03 04 4B 40 34 3C 20 38 8C ......I..K@4< 8.
+005E  6C 94 20 2D 24 03 03 3B 3D 49 08 3C 5C 20 14 50 l. -$..;=I.<\ .P
+006E  19 14 64 28 5C 28 24 3D 49 20 58 24 24 64 24 31 ..d(\($=I X$$d$1
+007E  03 05 3B 24 24 24 28 24 24 25 30 24 24 20 00 01 ..;$$$($$%0$$ ..
+008E  01                                              .
+
+Segment: .debug_loc BYTE USE32 00000000 bytes
+
+Segment: .debug_abbrev BYTE USE32 000000A3 bytes
+0000				L$56:
+0000  06 11 01 01 13 03 08 10 06 13 0F 1B 08 25 08 42 .............%.B
+0010  0F 43 06 35 10 82 41 0B 83 41 06 00 00 09 24 00 .C.5..A..A....$.
+0020  03 08 3E 0B 0B 0B 00 00 18 01 00 37 0F 49 13 00 ..>........7.I..
+0030  00 D3 01 34 00 32 0B 46 0A 3F 0C 34 0C 03 08 02 ...4.2.F.?.4....
+0040  0A 49 13 00 00 10 0F 00 33 0B 49 13 00 00 88 01 .I......3.I.....
+0050  2E 01 01 13 32 0B 49 13 2C 0F 46 0A 03 08 3F 0C ....2.I.,.F...?.
+0060  20 0B 36 0B 27 0C 4C 0B 34 0C 2A 0A 11 01 12 01  .6.'.L.4.*.....
+0070  33 0B 40 0A 00 00 C8 01 05 00 03 08 02 0A 84 41 3.@............A
+0080  0A 49 13 00 00 D2 01 34 00 32 0B 3F 0C 34 0C 03 .I.....4.2.?.4..
+0090  08 02 0A 49 13 00 00 66 0B 01 01 13 11 01 12 01 ...I...f........
+00A0  00 00 00                                        ...
+
+Segment: .debug_macinfo BYTE USE32 00000001 bytes
+0000				L$57:
+0000  00                                              .
+
+Segment: .debug_str BYTE USE32 00000000 bytes
+
+Segment: .WATCOM_references BYTE USE32 00000004 bytes
+0000  00 00 00 00                                     ....
+0004				L$58:
+

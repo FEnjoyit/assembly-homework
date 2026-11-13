@@ -1,0 +1,146 @@
+; 8086 DOS: memoized recursive Fibonacci, 21 decimal digits per value.
+.MODEL SMALL
+.STACK 1000H
+.DATA
+    PROMPT DB 'Enter n (1-100):',13,10,'$'
+    ERROR_MSG DB 'Invalid input. Enter 1 to 100.',13,10,'$'
+    ANSWER DB 'Fibonacci number:',13,10,'$'
+    EOL DB 13,10,'$'
+    INPUT_BUF DB 80,0,80 DUP(0)
+    READY DB 1,1,99 DUP(0)
+    CACHE DB 21 DUP(0),1,20 DUP(0),2079 DUP(0)
+.CODE
+START:
+    MOV AX,@DATA
+    MOV DS,AX
+READ_AGAIN:
+    LEA DX,PROMPT
+    CALL PRINT_STR
+    MOV BYTE PTR INPUT_BUF[1],0
+    LEA DX,INPUT_BUF
+    MOV AH,0AH
+    INT 21H
+    LEA DX,EOL
+    CALL PRINT_STR
+    XOR CX,CX
+    MOV CL,INPUT_BUF[1]
+    CMP CX,1
+    JB INVALID
+    CMP CX,3
+    JA INVALID
+    LEA SI,INPUT_BUF[2]
+    XOR AX,AX
+    MOV BX,10
+NEXT_INPUT:
+    MOV DL,[SI]
+    SUB DL,'0'
+    CMP DL,9
+    JA INVALID
+    XOR DH,DH
+    MOV DI,DX
+    MUL BX
+    ADD AX,DI
+    INC SI
+    LOOP NEXT_INPUT
+    CMP AX,1
+    JB INVALID
+    CMP AX,100
+    JA INVALID
+ROOT_CALL:
+    CALL FIB
+    LEA DX,ANSWER
+    CALL PRINT_STR
+    CALL PRINT_DIGITS
+    LEA DX,EOL
+    CALL PRINT_STR
+    MOV AX,4C00H
+    INT 21H
+INVALID:
+    LEA DX,ERROR_MSG
+    CALL PRINT_STR
+    JMP READ_AGAIN
+
+; AX = n, returns DS:SI pointing to its 21 little-endian decimal digits.
+; BX, DI, CX, DX are preserved. AX, SI and flags are volatile.
+FIB PROC NEAR
+    PUSH BX
+    PUSH DI
+    PUSH CX
+    PUSH DX
+    MOV BX,AX
+    MOV CX,21
+    MUL CX
+    MOV DI,AX
+    LEA DI,CACHE[DI]
+    CMP BYTE PTR READY[BX],0
+    JNE FIB_DONE
+    MOV AX,BX
+    DEC AX
+RECURSE_LEFT:
+    CALL FIB
+    PUSH SI
+    MOV AX,BX
+    SUB AX,2
+RECURSE_RIGHT:
+    CALL FIB
+    MOV CX,BX
+    POP BX
+    PUSH CX
+    MOV CX,21
+    XOR DX,DX
+ADD_DIGIT:
+    MOV AL,[BX]
+    ADD AL,[SI]
+    ADD AL,DL
+    XOR DL,DL
+    CMP AL,10
+    JB STORE_DIGIT
+    SUB AL,10
+    INC DL
+STORE_DIGIT:
+    MOV [DI],AL
+    INC BX
+    INC SI
+    INC DI
+    LOOP ADD_DIGIT
+    SUB DI,21
+    POP BX
+    MOV BYTE PTR READY[BX],1
+FIB_DONE:
+    MOV SI,DI
+    POP DX
+    POP CX
+    POP DI
+    POP BX
+FIB_RETURN:
+    RET
+FIB ENDP
+
+PRINT_STR PROC NEAR
+    MOV AH,09H
+    INT 21H
+    RET
+PRINT_STR ENDP
+
+; Print DS:SI from highest to lowest digit, skipping leading zeroes.
+PRINT_DIGITS PROC NEAR
+    ADD SI,20
+    MOV CX,21
+SKIP_ZERO:
+    CMP CX,1
+    JE SHOW_DIGIT
+    CMP BYTE PTR [SI],0
+    JNE SHOW_DIGIT
+    DEC SI
+    DEC CX
+    JMP SKIP_ZERO
+SHOW_DIGIT:
+    MOV DL,[SI]
+    ADD DL,'0'
+    MOV AH,02H
+    INT 21H
+    DEC SI
+    LOOP SHOW_DIGIT
+    RET
+PRINT_DIGITS ENDP
+END START

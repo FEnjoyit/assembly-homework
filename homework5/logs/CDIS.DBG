@@ -1,0 +1,124 @@
+-r
+AX=0000 BX=0000 CX=3A28 DX=0000 SP=1000 BP=0000 SI=0000 DI=0000 
+DS=0DF0 ES=0DF0 SS=0FF5 CS=0E00 IP=040E NV UP EI PL ZR NA PE NC 
+0E00:040E E98A00            JMP     049B
+-u cs:10 lcb
+0E00:0010 53                PUSH    BX
+0E00:0011 51                PUSH    CX
+0E00:0012 52                PUSH    DX
+0E00:0013 56                PUSH    SI
+0E00:0014 57                PUSH    DI
+0E00:0015 55                PUSH    BP
+0E00:0016 89E5              MOV     BP,SP
+0E00:0018 81EC1400          SUB     SP,0014
+0E00:001C 8946F0            MOV     [BP-10],AX
+0E00:001F 8B46F0            MOV     AX,[BP-10]
+0E00:0022 BB1500            MOV     BX,0015
+0E00:0025 F7EB              IMUL    BX
+0E00:0027 BBF700            MOV     BX,00F7
+0E00:002A 01C3              ADD     BX,AX
+0E00:002C 895EF4            MOV     [BP-0C],BX
+0E00:002F 8B5EF0            MOV     BX,[BP-10]
+0E00:0032 80BF920000        CMP     BYTE PTR [BX+0092],00
+0E00:0037 7403              JZ      003C
+0E00:0039 E98D00            JMP     00C9
+0E00:003C 8B46F0            MOV     AX,[BP-10]
+0E00:003F 48                DEC     AX
+0E00:0040 E8CDFF            CALL    0010
+0E00:0043 8946F6            MOV     [BP-0A],AX
+0E00:0046 8B46F0            MOV     AX,[BP-10]
+0E00:0049 2D0200            SUB     AX,0002
+0E00:004C E8C1FF            CALL    0010
+0E00:004F 8946F8            MOV     [BP-08],AX
+0E00:0052 C746FE0000        MOV     WORD PTR [BP-02],0000
+0E00:0057 C746FA0000        MOV     WORD PTR [BP-06],0000
+0E00:005C 837EFA15          CMP     WORD PTR [BP-06],+15
+0E00:0060 735F              JAE     00C1
+0E00:0062 8B5EF6            MOV     BX,[BP-0A]
+0E00:0065 035EFA            ADD     BX,[BP-06]
+0E00:0068 8A07              MOV     AL,[BX]
+0E00:006A 30E4              XOR     AH,AH
+0E00:006C 89C2              MOV     DX,AX
+0E00:006E 8B5EF8            MOV     BX,[BP-08]
+0E00:0071 035EFA            ADD     BX,[BP-06]
+0E00:0074 8A07              MOV     AL,[BX]
+0E00:0076 30E4              XOR     AH,AH
+0E00:0078 01D0              ADD     AX,DX
+0E00:007A 8B56FE            MOV     DX,[BP-02]
+0E00:007D 01C2              ADD     DX,AX
+0E00:007F 8956FC            MOV     [BP-04],DX
+0E00:0082 837EFC0A          CMP     WORD PTR [BP-04],+0A
+0E00:0086 7207              JB      008F
+0E00:0088 C746EC0100        MOV     WORD PTR [BP-14],0001
+0E00:008D EB05              JMP     0094
+0E00:008F C746EC0000        MOV     WORD PTR [BP-14],0000
+0E00:0094 8B46EC            MOV     AX,[BP-14]
+0E00:0097 8946FE            MOV     [BP-02],AX
+0E00:009A 837EFE00          CMP     WORD PTR [BP-02],+00
+0E00:009E 740B              JZ      00AB
+0E00:00A0 8B46FC            MOV     AX,[BP-04]
+0E00:00A3 2D0A00            SUB     AX,000A
+0E00:00A6 8946EE            MOV     [BP-12],AX
+0E00:00A9 EB06              JMP     00B1
+0E00:00AB 8B46FC            MOV     AX,[BP-04]
+0E00:00AE 8946EE            MOV     [BP-12],AX
+0E00:00B1 8A46EE            MOV     AL,[BP-12]
+0E00:00B4 8B5EF4            MOV     BX,[BP-0C]
+0E00:00B7 035EFA            ADD     BX,[BP-06]
+0E00:00BA 8807              MOV     [BX],AL
+0E00:00BC FF46FA            INC     WORD PTR [BP-06]
+0E00:00BF EB9B              JMP     005C
+0E00:00C1 8B5EF0            MOV     BX,[BP-10]
+0E00:00C4 C687920001        MOV     BYTE PTR [BX+0092],01
+0E00:00C9 8B5EF4            MOV     BX,[BP-0C]
+0E00:00CC 895EF2            MOV     [BP-0E],BX
+0E00:00CF 8B46F2            MOV     AX,[BP-0E]
+0E00:00D2 89EC              MOV     SP,BP
+0E00:00D4 5D                POP     BP
+0E00:00D5 5F                POP     DI
+0E00:00D6 5E                POP     SI
+0E00:00D7 5A                POP     DX
+0E00:00D8 59                POP     CX
+0E00:00D9 5B                POP     BX
+0E00:00DA C3                RET
+-u cs:212 l5d
+0E00:0212 53                PUSH    BX
+0E00:0213 51                PUSH    CX
+0E00:0214 52                PUSH    DX
+0E00:0215 56                PUSH    SI
+0E00:0216 57                PUSH    DI
+0E00:0217 55                PUSH    BP
+0E00:0218 89E5              MOV     BP,SP
+0E00:021A 81EC0600          SUB     SP,0006
+0E00:021E B82200            MOV     AX,0022
+0E00:0221 E8C301            CALL    03E7
+0E00:0224 E8B4FE            CALL    00DB
+0E00:0227 8946FC            MOV     [BP-04],AX
+0E00:022A 837EFC00          CMP     WORD PTR [BP-04],+00
+0E00:022E 7D07              JGE     0237
+0E00:0230 C746FA0100        MOV     WORD PTR [BP-06],0001
+0E00:0235 EB2C              JMP     0263
+0E00:0237 837EFC00          CMP     WORD PTR [BP-04],+00
+0E00:023B 7506              JNZ     0243
+0E00:023D B83300            MOV     AX,0033
+0E00:0240 E8A401            CALL    03E7
+0E00:0243 837EFC00          CMP     WORD PTR [BP-04],+00
+0E00:0247 74D5              JZ      021E
+0E00:0249 8B46FC            MOV     AX,[BP-04]
+0E00:024C E8C1FD            CALL    0010
+0E00:024F 8946FE            MOV     [BP-02],AX
+0E00:0252 B85200            MOV     AX,0052
+0E00:0255 E88F01            CALL    03E7
+0E00:0258 8B46FE            MOV     AX,[BP-02]
+0E00:025B E85CFF            CALL    01BA
+0E00:025E C746FA0000        MOV     WORD PTR [BP-06],0000
+0E00:0263 8B46FA            MOV     AX,[BP-06]
+0E00:0266 89EC              MOV     SP,BP
+0E00:0268 5D                POP     BP
+0E00:0269 5F                POP     DI
+0E00:026A 5E                POP     SI
+0E00:026B 5A                POP     DX
+0E00:026C 59                POP     CX
+0E00:026D 5B                POP     BX
+0E00:026E C3                RET
+-q

@@ -1,0 +1,260 @@
+Microsoft (R) Macro Assembler Version 5.00                  11/13/26 18:32:43
+                                                             Page     1-1
+
+
+				; 8086 DOS: memoized recursive Fibonacci, 21 de
+				cimal digits per value. 
+				.MODEL SMALL 
+ 1000				.STACK 1000H 
+ 0000				.DATA 
+ 0000  45 6E 74 65 72 20 6E	    PROMPT DB 'Enter n (1-100):',13,10,'$' 
+       20 28 31 2D 31 30 30	
+       29 3A 0D 0A 24		
+ 0013  49 6E 76 61 6C 69 64	    ERROR_MSG DB 'Invalid input. Enter 1 to 100
+				.',13,10,'$' 
+       20 69 6E 70 75 74 2E	
+       20 45 6E 74 65 72 20	
+       31 20 74 6F 20 31 30	
+       30 2E 0D 0A 24		
+ 0034  46 69 62 6F 6E 61 63	    ANSWER DB 'Fibonacci number:',13,10,'$' 
+       63 69 20 6E 75 6D 62	
+       65 72 3A 0D 0A 24	
+ 0048  0D 0A 24			    EOL DB 13,10,'$' 
+ 004B  50 00			    INPUT_BUF DB 80,0,80 DUP(0) 
+       0050[			
+	   00			
+			 ]	
+				
+ 009D  01 01			    READY DB 1,1,99 DUP(0) 
+       0063[			
+	   00			
+			 ]	
+				
+ 0102  0015[			    CACHE DB 21 DUP(0),1,20 DUP(0),2079 DUP(0) 
+	   00			
+			 ]	
+       01			
+       0014[			
+	   00			
+			 ]	
+       081F[			
+	   00			
+			 ]	
+				
+ 0000				.CODE 
+ 0000				START: 
+ 0000  B8 ---- R		    MOV AX,@DATA 
+ 0003  8E D8			    MOV DS,AX 
+ 0005				READ_AGAIN: 
+ 0005  8D 16 0000 R		    LEA DX,PROMPT 
+ 0009  E8 00D1 R		    CALL PRINT_STR 
+ 000C  C6 06 004C R 00		    MOV BYTE PTR INPUT_BUF[1],0 
+ 0011  8D 16 004B R		    LEA DX,INPUT_BUF 
+ 0015  B4 0A			    MOV AH,0AH 
+ 0017  CD 21			    INT 21H 
+ 0019  8D 16 0048 R		    LEA DX,EOL 
+ 001D  E8 00D1 R		    CALL PRINT_STR 
+ 0020  33 C9			    XOR CX,CX 
+ 0022  8A 0E 004C R		    MOV CL,INPUT_BUF[1] 
+Microsoft (R) Macro Assembler Version 5.00                  11/13/26 18:32:43
+                                                             Page     1-2
+
+
+ 0026  83 F9 01			    CMP CX,1 
+ 0029  72 46			    JB INVALID 
+ 002B  83 F9 03			    CMP CX,3 
+ 002E  77 41			    JA INVALID 
+ 0030  8D 36 004D R		    LEA SI,INPUT_BUF[2] 
+ 0034  33 C0			    XOR AX,AX 
+ 0036  BB 000A			    MOV BX,10 
+ 0039				NEXT_INPUT: 
+ 0039  8A 14			    MOV DL,[SI] 
+ 003B  80 EA 30			    SUB DL,'0' 
+ 003E  80 FA 09			    CMP DL,9 
+ 0041  77 2E			    JA INVALID 
+ 0043  32 F6			    XOR DH,DH 
+ 0045  8B FA			    MOV DI,DX 
+ 0047  F7 E3			    MUL BX 
+ 0049  03 C7			    ADD AX,DI 
+ 004B  46			    INC SI 
+ 004C  E2 EB			    LOOP NEXT_INPUT 
+ 004E  3D 0001			    CMP AX,1 
+ 0051  72 1E			    JB INVALID 
+ 0053  3D 0064			    CMP AX,100 
+ 0056  77 19			    JA INVALID 
+ 0058				ROOT_CALL: 
+ 0058  E8 007A R		    CALL FIB 
+ 005B  8D 16 0034 R		    LEA DX,ANSWER 
+ 005F  E8 00D1 R		    CALL PRINT_STR 
+ 0062  E8 00D6 R		    CALL PRINT_DIGITS 
+ 0065  8D 16 0048 R		    LEA DX,EOL 
+ 0069  E8 00D1 R		    CALL PRINT_STR 
+ 006C  B8 4C00			    MOV AX,4C00H 
+ 006F  CD 21			    INT 21H 
+ 0071				INVALID: 
+ 0071  8D 16 0013 R		    LEA DX,ERROR_MSG 
+ 0075  E8 00D1 R		    CALL PRINT_STR 
+ 0078  EB 8B			    JMP READ_AGAIN 
+				 
+				; AX = n, returns DS:SI pointing to its 21 litt
+				le-endian decimal digits. 
+				; BX, DI, CX, DX are preserved. AX, SI and flag
+				s are volatile. 
+ 007A				FIB PROC NEAR 
+ 007A  53			    PUSH BX 
+ 007B  57			    PUSH DI 
+ 007C  51			    PUSH CX 
+ 007D  52			    PUSH DX 
+ 007E  8B D8			    MOV BX,AX 
+ 0080  B9 0015			    MOV CX,21 
+ 0083  F7 E1			    MUL CX 
+ 0085  8B F8			    MOV DI,AX 
+ 0087  8D BD 0102 R		    LEA DI,CACHE[DI] 
+ 008B  80 BF 009D R 00		    CMP BYTE PTR READY[BX],0 
+ 0090  75 38			    JNE FIB_DONE 
+ 0092  8B C3			    MOV AX,BX 
+ 0094  48			    DEC AX 
+Microsoft (R) Macro Assembler Version 5.00                  11/13/26 18:32:43
+                                                             Page     1-3
+
+
+ 0095				RECURSE_LEFT: 
+ 0095  E8 007A R		    CALL FIB 
+ 0098  56			    PUSH SI 
+ 0099  8B C3			    MOV AX,BX 
+ 009B  2D 0002			    SUB AX,2 
+ 009E				RECURSE_RIGHT: 
+ 009E  E8 007A R		    CALL FIB 
+ 00A1  8B CB			    MOV CX,BX 
+ 00A3  5B			    POP BX 
+ 00A4  51			    PUSH CX 
+ 00A5  B9 0015			    MOV CX,21 
+ 00A8  33 D2			    XOR DX,DX 
+ 00AA				ADD_DIGIT: 
+ 00AA  8A 07			    MOV AL,[BX] 
+ 00AC  02 04			    ADD AL,[SI] 
+ 00AE  02 C2			    ADD AL,DL 
+ 00B0  32 D2			    XOR DL,DL 
+ 00B2  3C 0A			    CMP AL,10 
+ 00B4  72 04			    JB STORE_DIGIT 
+ 00B6  2C 0A			    SUB AL,10 
+ 00B8  FE C2			    INC DL 
+ 00BA				STORE_DIGIT: 
+ 00BA  88 05			    MOV [DI],AL 
+ 00BC  43			    INC BX 
+ 00BD  46			    INC SI 
+ 00BE  47			    INC DI 
+ 00BF  E2 E9			    LOOP ADD_DIGIT 
+ 00C1  83 EF 15			    SUB DI,21 
+ 00C4  5B			    POP BX 
+ 00C5  C6 87 009D R 01		    MOV BYTE PTR READY[BX],1 
+ 00CA				FIB_DONE: 
+ 00CA  8B F7			    MOV SI,DI 
+ 00CC  5A			    POP DX 
+ 00CD  59			    POP CX 
+ 00CE  5F			    POP DI 
+ 00CF  5B			    POP BX 
+ 00D0				FIB_RETURN: 
+ 00D0  C3			    RET 
+ 00D1				FIB ENDP 
+				 
+ 00D1				PRINT_STR PROC NEAR 
+ 00D1  B4 09			    MOV AH,09H 
+ 00D3  CD 21			    INT 21H 
+ 00D5  C3			    RET 
+ 00D6				PRINT_STR ENDP 
+				 
+				; Print DS:SI from highest to lowest digit, ski
+				pping leading zeroes. 
+ 00D6				PRINT_DIGITS PROC NEAR 
+ 00D6  83 C6 14			    ADD SI,20 
+ 00D9  B9 0015			    MOV CX,21 
+ 00DC				SKIP_ZERO: 
+ 00DC  83 F9 01			    CMP CX,1 
+ 00DF  74 09			    JE SHOW_DIGIT 
+Microsoft (R) Macro Assembler Version 5.00                  11/13/26 18:32:43
+                                                             Page     1-4
+
+
+ 00E1  80 3C 00			    CMP BYTE PTR [SI],0 
+ 00E4  75 04			    JNE SHOW_DIGIT 
+ 00E6  4E			    DEC SI 
+ 00E7  49			    DEC CX 
+ 00E8  EB F2			    JMP SKIP_ZERO 
+ 00EA				SHOW_DIGIT: 
+ 00EA  8A 14			    MOV DL,[SI] 
+ 00EC  80 C2 30			    ADD DL,'0' 
+ 00EF  B4 02			    MOV AH,02H 
+ 00F1  CD 21			    INT 21H 
+ 00F3  4E			    DEC SI 
+ 00F4  E2 F4			    LOOP SHOW_DIGIT 
+ 00F6  C3			    RET 
+ 00F7				PRINT_DIGITS ENDP 
+ 00F7				END START 
+Microsoft (R) Macro Assembler Version 5.00                  11/13/26 18:32:43
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+DGROUP . . . . . . . . . . . . .  	GROUP
+  _DATA  . . . . . . . . . . . .  	094B	WORD	PUBLIC	'DATA'
+  STACK  . . . . . . . . . . . .  	1000	PARA	STACK	'STACK'
+_TEXT  . . . . . . . . . . . . .  	00F7	WORD	PUBLIC	'CODE'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+ADD_DIGIT  . . . . . . . . . . .  	L NEAR	00AA	_TEXT
+ANSWER . . . . . . . . . . . . .  	L BYTE	0034	_DATA
+
+CACHE  . . . . . . . . . . . . .  	L BYTE	0102	_DATA	Length = 0015
+
+EOL  . . . . . . . . . . . . . .  	L BYTE	0048	_DATA
+ERROR_MSG  . . . . . . . . . . .  	L BYTE	0013	_DATA
+
+FIB  . . . . . . . . . . . . . .  	N PROC	007A	_TEXT	Length = 0057
+FIB_DONE . . . . . . . . . . . .  	L NEAR	00CA	_TEXT
+FIB_RETURN . . . . . . . . . . .  	L NEAR	00D0	_TEXT
+
+INPUT_BUF  . . . . . . . . . . .  	L BYTE	004B	_DATA
+INVALID  . . . . . . . . . . . .  	L NEAR	0071	_TEXT
+
+NEXT_INPUT . . . . . . . . . . .  	L NEAR	0039	_TEXT
+
+PRINT_DIGITS . . . . . . . . . .  	N PROC	00D6	_TEXT	Length = 0021
+PRINT_STR  . . . . . . . . . . .  	N PROC	00D1	_TEXT	Length = 0005
+PROMPT . . . . . . . . . . . . .  	L BYTE	0000	_DATA
+
+READY  . . . . . . . . . . . . .  	L BYTE	009D	_DATA
+READ_AGAIN . . . . . . . . . . .  	L NEAR	0005	_TEXT
+RECURSE_LEFT . . . . . . . . . .  	L NEAR	0095	_TEXT
+RECURSE_RIGHT  . . . . . . . . .  	L NEAR	009E	_TEXT
+ROOT_CALL  . . . . . . . . . . .  	L NEAR	0058	_TEXT
+
+SHOW_DIGIT . . . . . . . . . . .  	L NEAR	00EA	_TEXT
+SKIP_ZERO  . . . . . . . . . . .  	L NEAR	00DC	_TEXT
+START  . . . . . . . . . . . . .  	L NEAR	0000	_TEXT
+STORE_DIGIT  . . . . . . . . . .  	L NEAR	00BA	_TEXT
+
+@CODE  . . . . . . . . . . . . .  	TEXT  _TEXT		
+@CODESIZE  . . . . . . . . . . .  	TEXT  0		
+@DATASIZE  . . . . . . . . . . .  	TEXT  0		
+@FILENAME  . . . . . . . . . . .  	TEXT  H5FIB		
+
+Microsoft (R) Macro Assembler Version 5.00                  11/13/26 18:32:43
+                                                             Symbols-2
+
+
+
+    146 Source  Lines
+    146 Total   Lines
+     37 Symbols
+
+  50886 + 439002 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

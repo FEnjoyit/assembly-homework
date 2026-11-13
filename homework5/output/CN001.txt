@@ -1,0 +1,3 @@
+Enter n (1-100):
+Fibonacci number:
+1

@@ -1,0 +1,4 @@
+Enter n (1-100):
+47
+Fibonacci number:
+2971215073

@@ -1,0 +1,4 @@
+Enter n (1-100):
+94
+Fibonacci number:
+19740274219868223167
