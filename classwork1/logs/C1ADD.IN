@@ -1,0 +1,16 @@
+tm 1
+r ax
+1999
+r bx
+a
+r di
+6
+r ip
+49
+r
+t
+t
+t
+t
+r
+q

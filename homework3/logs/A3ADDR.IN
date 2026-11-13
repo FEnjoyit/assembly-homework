@@ -1,0 +1,11 @@
+tm 1
+g=0 17
+r
+d ss:bp-2 l2
+d ss:sp l2
+t
+r
+g 23
+r
+g
+q
