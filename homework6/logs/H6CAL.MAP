@@ -1,0 +1,8 @@
+
+ Start  Stop   Length Name                   Class
+ 00000H 001FFH 00200H STACKSEG               STACK
+ 00200H 00349H 0014AH DATASEG                DATA
+ 00350H 004C9H 0017AH MAINSEG                CODE
+ 004D0H 0057EH 000AFH CALCSEG                CODE
+
+Program entry point at 0035:0000

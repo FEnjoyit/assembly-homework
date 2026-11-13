@@ -1,0 +1,11 @@
+tm 1
+u cs:0 l6a
+t
+t
+e ds:0 ea 07 0b 00
+r ip
+4d
+t
+u cs:0 l7a
+u cs:7a l3c
+q

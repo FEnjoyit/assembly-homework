@@ -1,0 +1,820 @@
+Module: D:\Homework\6\HUI\dos\work\H6CAL.C
+GROUP: 'DGROUP' CONST,CONST2,_DATA
+
+Segment: _TEXT BYTE USE16 00000344 bytes
+
+#include <stdio.h>
+#undef putchar
+
+static const unsigned int lengths[12] =
+    {31,28,31,30,31,30,31,31,30,31,30,31};
+static const char *names[12] = {"January","February","March","April",
+    "May","June","July","August","September","October","November","December"};
+
+unsigned int is_leap(unsigned int year)
+0000				is_leap_:
+0000  53				push		bx
+0001  51				push		cx
+0002  52				push		dx
+0003  56				push		si
+0004  57				push		di
+0005  55				push		bp
+0006  89 E5				mov		bp,sp
+0008  81 EC 06 00			sub		sp,0x0006
+000C				L$1:
+000C  89 46 FA				mov		word ptr -0x6[bp],ax
+
+{
+    return year % 400 == 0 || (year % 4 == 0 && year % 100 != 0);
+000F  B9 90 01				mov		cx,0x0190
+0012  8B 5E FA				mov		bx,word ptr -0x6[bp]
+0015  31 D2				xor		dx,dx
+0017  89 D8				mov		ax,bx
+0019  F7 F1				div		cx
+001B  85 D2				test		dx,dx
+001D  74 19				je		L$3
+001F  F7 46 FA 03 00			test		word ptr -0x6[bp],0x0003
+0024  75 10				jne		L$2
+0026  B9 64 00				mov		cx,0x0064
+0029  8B 5E FA				mov		bx,word ptr -0x6[bp]
+002C  31 D2				xor		dx,dx
+002E  89 D8				mov		ax,bx
+0030  F7 F1				div		cx
+0032  85 D2				test		dx,dx
+0034  75 02				jne		L$3
+0036				L$2:
+0036  EB 07				jmp		L$4
+0038				L$3:
+0038  C7 46 FE 01 00			mov		word ptr -0x2[bp],0x0001
+003D  EB 05				jmp		L$5
+003F				L$4:
+003F  C7 46 FE 00 00			mov		word ptr -0x2[bp],0x0000
+0044				L$5:
+0044  8B 46 FE				mov		ax,word ptr -0x2[bp]
+0047  89 46 FC				mov		word ptr -0x4[bp],ax
+
+}
+004A  8B 46 FC				mov		ax,word ptr -0x4[bp]
+004D				L$6:
+004D  89 EC				mov		sp,bp
+004F  5D				pop		bp
+0050  5F				pop		di
+0051  5E				pop		si
+0052  5A				pop		dx
+0053  59				pop		cx
+0054  5B				pop		bx
+0055  C3				ret		
+
+
+unsigned int month_days(unsigned int year, unsigned int month)
+
+Routine Size: 86 bytes,    Routine Base: _TEXT + 0000
+
+0056				month_days_:
+0056  53				push		bx
+0057  51				push		cx
+0058  56				push		si
+0059  57				push		di
+005A  55				push		bp
+005B  89 E5				mov		bp,sp
+005D  81 EC 08 00			sub		sp,0x0008
+0061				L$7:
+0061  89 46 F8				mov		word ptr -0x8[bp],ax
+0064  89 56 FA				mov		word ptr -0x6[bp],dx
+
+{
+    return lengths[month-1] + (month == 2 && is_leap(year));
+0067  83 7E FA 02			cmp		word ptr -0x6[bp],0x0002
+006B  75 0A				jne		L$8
+006D  8B 46 F8				mov		ax,word ptr -0x8[bp]
+0070  E8 00 00				call		is_leap_
+0073  85 C0				test		ax,ax
+0075  75 02				jne		L$9
+0077				L$8:
+0077  EB 07				jmp		L$10
+0079				L$9:
+0079  C7 46 FE 01 00			mov		word ptr -0x2[bp],0x0001
+007E  EB 05				jmp		L$11
+0080				L$10:
+0080  C7 46 FE 00 00			mov		word ptr -0x2[bp],0x0000
+0085				L$11:
+0085  8B 5E FA				mov		bx,word ptr -0x6[bp]
+0088  D1 E3				shl		bx,0x01
+008A  8B 87 FE FF			mov		ax,word ptr _lengths-0x2[bx]
+008E  03 46 FE				add		ax,word ptr -0x2[bp]
+0091  89 46 FC				mov		word ptr -0x4[bp],ax
+
+}
+0094  8B 46 FC				mov		ax,word ptr -0x4[bp]
+0097				L$12:
+0097  89 EC				mov		sp,bp
+0099  5D				pop		bp
+009A  5F				pop		di
+009B  5E				pop		si
+009C  59				pop		cx
+009D  5B				pop		bx
+009E  C3				ret		
+
+
+unsigned int first_day(unsigned int year, unsigned int month)
+
+Routine Size: 73 bytes,    Routine Base: _TEXT + 0056
+
+009F				first_day_:
+009F  53				push		bx
+00A0  51				push		cx
+00A1  56				push		si
+00A2  57				push		di
+00A3  55				push		bp
+00A4  89 E5				mov		bp,sp
+00A6  81 EC 0C 00			sub		sp,0x000c
+00AA				L$13:
+00AA  89 46 F4				mov		word ptr -0xc[bp],ax
+00AD  89 56 F6				mov		word ptr -0xa[bp],dx
+
+{
+    unsigned int y, m, weekday = 1;
+00B0  C7 46 FE 01 00			mov		word ptr -0x2[bp],0x0001
+
+    for (y = 1900; y < year; ++y)
+00B5  C7 46 FA 6C 07			mov		word ptr -0x6[bp],0x076c
+00BA				L$14:
+00BA  8B 46 FA				mov		ax,word ptr -0x6[bp]
+00BD  3B 46 F4				cmp		ax,word ptr -0xc[bp]
+00C0  73 1F				jae		L$15
+
+        weekday = (weekday + 1 + is_leap(y)) % 7;
+00C2  8B 46 FA				mov		ax,word ptr -0x6[bp]
+00C5  E8 00 00				call		is_leap_
+00C8  8B 56 FE				mov		dx,word ptr -0x2[bp]
+00CB  42				inc		dx
+00CC  01 C2				add		dx,ax
+00CE  89 D3				mov		bx,dx
+00D0  B9 07 00				mov		cx,0x0007
+00D3  31 D2				xor		dx,dx
+00D5  89 D8				mov		ax,bx
+00D7  F7 F1				div		cx
+00D9  89 56 FE				mov		word ptr -0x2[bp],dx
+00DC  FF 46 FA				inc		word ptr -0x6[bp]
+00DF  EB D9				jmp		L$14
+
+    for (m = 1; m < month; ++m)
+00E1				L$15:
+00E1  C7 46 FC 01 00			mov		word ptr -0x4[bp],0x0001
+00E6				L$16:
+00E6  8B 46 FC				mov		ax,word ptr -0x4[bp]
+00E9  3B 46 F6				cmp		ax,word ptr -0xa[bp]
+00EC  73 1F				jae		L$17
+
+        weekday = (weekday + month_days(year, m)) % 7;
+00EE  8B 56 FC				mov		dx,word ptr -0x4[bp]
+00F1  8B 46 F4				mov		ax,word ptr -0xc[bp]
+00F4  E8 00 00				call		month_days_
+00F7  8B 5E FE				mov		bx,word ptr -0x2[bp]
+00FA  01 C3				add		bx,ax
+00FC  B9 07 00				mov		cx,0x0007
+00FF  31 D2				xor		dx,dx
+0101  89 D8				mov		ax,bx
+0103  F7 F1				div		cx
+0105  89 56 FE				mov		word ptr -0x2[bp],dx
+0108  FF 46 FC				inc		word ptr -0x4[bp]
+010B  EB D9				jmp		L$16
+
+    return weekday;
+010D				L$17:
+010D  8B 46 FE				mov		ax,word ptr -0x2[bp]
+0110  89 46 F8				mov		word ptr -0x8[bp],ax
+
+}
+0113  8B 46 F8				mov		ax,word ptr -0x8[bp]
+0116				L$18:
+0116  89 EC				mov		sp,bp
+0118  5D				pop		bp
+0119  5F				pop		di
+011A  5E				pop		si
+011B  59				pop		cx
+011C  5B				pop		bx
+011D  C3				ret		
+
+
+unsigned int read_number(const char *prompt, unsigned int low,
+
+Routine Size: 127 bytes,    Routine Base: _TEXT + 009F
+
+011E				read_number_:
+011E  56				push		si
+011F  57				push		di
+0120  55				push		bp
+0121  89 E5				mov		bp,sp
+0123  81 EC 14 00			sub		sp,0x0014
+0127				L$19:
+0127  89 46 EE				mov		word ptr -0x12[bp],ax
+012A  89 56 F0				mov		word ptr -0x10[bp],dx
+012D  89 5E F2				mov		word ptr -0xe[bp],bx
+0130  89 4E F4				mov		word ptr -0xc[bp],cx
+
+                         unsigned int high, unsigned int digits)
+{
+    unsigned int value, count, bad;
+    int ch;
+    for (;;) {
+        printf("%s", prompt);
+0133				L$20:
+0133  8B 46 EE				mov		ax,word ptr -0x12[bp]
+0136  50				push		ax
+0137  B8 56 00				mov		ax,offset DGROUP:L$73
+013A  50				push		ax
+013B  E8 00 00				call		printf_
+013E  83 C4 04				add		sp,0x0004
+
+        value = count = bad = 0;
+0141  C7 46 FC 00 00			mov		word ptr -0x4[bp],0x0000
+0146  8B 46 FC				mov		ax,word ptr -0x4[bp]
+0149  89 46 FA				mov		word ptr -0x6[bp],ax
+014C  8B 46 FA				mov		ax,word ptr -0x6[bp]
+014F  89 46 F8				mov		word ptr -0x8[bp],ax
+
+        while ((ch = getchar()) != '\n' && ch != EOF) {
+0152				L$21:
+0152  83 3E 02 00 00			cmp		word ptr ___iob+0x2,0x0000
+0157  7E 10				jle		L$22
+0159  8B 1E 00 00			mov		bx,word ptr ___iob
+015D  8A 07				mov		al,byte ptr [bx]
+015F  30 E4				xor		ah,ah
+0161  2D 0D 00				sub		ax,0x000d
+0164  3D 0D 00				cmp		ax,0x000d
+0167  77 0B				ja		L$23
+0169				L$22:
+0169  B8 00 00				mov		ax,offset ___iob
+016C  E8 00 00				call		fgetc_
+016F  89 46 EC				mov		word ptr -0x14[bp],ax
+0172  EB 13				jmp		L$24
+0174				L$23:
+0174  FF 0E 02 00			dec		word ptr ___iob+0x2
+0178  8B 1E 00 00			mov		bx,word ptr ___iob
+017C  FF 06 00 00			inc		word ptr ___iob
+0180  8A 07				mov		al,byte ptr [bx]
+0182  30 E4				xor		ah,ah
+0184  89 46 EC				mov		word ptr -0x14[bp],ax
+0187				L$24:
+0187  8B 46 EC				mov		ax,word ptr -0x14[bp]
+018A  89 46 FE				mov		word ptr -0x2[bp],ax
+018D  83 7E FE 0A			cmp		word ptr -0x2[bp],0x000a
+0191  74 06				je		L$25
+0193  83 7E FE FF			cmp		word ptr -0x2[bp],0xffff
+0197  75 02				jne		L$26
+0199				L$25:
+0199  EB 42				jmp		L$33
+
+            if (ch == '\r') continue;
+019B				L$26:
+019B  83 7E FE 0D			cmp		word ptr -0x2[bp],0x000d
+019F  75 02				jne		L$27
+01A1  EB 37				jmp		L$32
+
+            ++count;
+01A3				L$27:
+01A3  FF 46 FA				inc		word ptr -0x6[bp]
+
+            if (ch < '0' || ch > '9' || count > digits) bad = 1;
+01A6  83 7E FE 30			cmp		word ptr -0x2[bp],0x0030
+01AA  7C 06				jl		L$28
+01AC  83 7E FE 39			cmp		word ptr -0x2[bp],0x0039
+01B0  7E 02				jle		L$29
+01B2				L$28:
+01B2  EB 08				jmp		L$30
+01B4				L$29:
+01B4  8B 46 FA				mov		ax,word ptr -0x6[bp]
+01B7  3B 46 F4				cmp		ax,word ptr -0xc[bp]
+01BA  76 05				jbe		L$31
+01BC				L$30:
+01BC  C7 46 FC 01 00			mov		word ptr -0x4[bp],0x0001
+
+            if (!bad) value = value * 10 + (unsigned int)(ch - '0');
+01C1				L$31:
+01C1  83 7E FC 00			cmp		word ptr -0x4[bp],0x0000
+01C5  75 13				jne		L$32
+01C7  8B 46 F8				mov		ax,word ptr -0x8[bp]
+01CA  BA 0A 00				mov		dx,0x000a
+01CD  F7 E2				mul		dx
+01CF  8B 56 FE				mov		dx,word ptr -0x2[bp]
+01D2  83 EA 30				sub		dx,0x0030
+01D5  01 D0				add		ax,dx
+01D7  89 46 F8				mov		word ptr -0x8[bp],ax
+
+        }
+01DA				L$32:
+01DA  E9 75 FF				jmp		L$21
+
+        putchar('\n');
+01DD				L$33:
+01DD  B8 0A 00				mov		ax,0x000a
+01E0  E8 00 00				call		putchar_
+
+        if (!bad && count && value >= low && value <= high) return value;
+01E3  83 7E FC 00			cmp		word ptr -0x4[bp],0x0000
+01E7  75 06				jne		L$34
+01E9  83 7E FA 00			cmp		word ptr -0x6[bp],0x0000
+01ED  75 02				jne		L$35
+01EF				L$34:
+01EF  EB 08				jmp		L$36
+01F1				L$35:
+01F1  8B 46 F8				mov		ax,word ptr -0x8[bp]
+01F4  3B 46 F0				cmp		ax,word ptr -0x10[bp]
+01F7  73 02				jae		L$37
+01F9				L$36:
+01F9  EB 08				jmp		L$38
+01FB				L$37:
+01FB  8B 46 F8				mov		ax,word ptr -0x8[bp]
+01FE  3B 46 F2				cmp		ax,word ptr -0xe[bp]
+0201  76 02				jbe		L$39
+0203				L$38:
+0203  EB 08				jmp		L$40
+0205				L$39:
+0205  8B 46 F8				mov		ax,word ptr -0x8[bp]
+0208  89 46 F6				mov		word ptr -0xa[bp],ax
+020B  EB 1A				jmp		L$42
+
+        printf("Invalid input. Please try again.\n");
+020D				L$40:
+020D  B8 59 00				mov		ax,offset DGROUP:L$74
+0210  50				push		ax
+0211  E8 00 00				call		printf_
+0214  83 C4 02				add		sp,0x0002
+
+        if (ch == EOF) return 0;
+0217  83 7E FE FF			cmp		word ptr -0x2[bp],0xffff
+021B  75 07				jne		L$41
+021D  C7 46 F6 00 00			mov		word ptr -0xa[bp],0x0000
+0222  EB 03				jmp		L$42
+
+    }
+0224				L$41:
+0224  E9 0C FF				jmp		L$20
+
+}
+0227				L$42:
+0227  8B 46 F6				mov		ax,word ptr -0xa[bp]
+022A				L$43:
+022A  89 EC				mov		sp,bp
+022C  5D				pop		bp
+022D  5F				pop		di
+022E  5E				pop		si
+022F  C3				ret		
+
+
+void print_calendar(unsigned int year, unsigned int month)
+
+Routine Size: 274 bytes,    Routine Base: _TEXT + 011E
+
+0230				print_calendar_:
+0230  53				push		bx
+0231  51				push		cx
+0232  56				push		si
+0233  57				push		di
+0234  55				push		bp
+0235  89 E5				mov		bp,sp
+0237  81 EC 0E 00			sub		sp,0x000e
+023B				L$44:
+023B  89 46 F2				mov		word ptr -0xe[bp],ax
+023E  89 56 F4				mov		word ptr -0xc[bp],dx
+
+{
+    unsigned int day, col, i, days;
+    days = month_days(year, month);
+0241  8B 56 F4				mov		dx,word ptr -0xc[bp]
+0244  8B 46 F2				mov		ax,word ptr -0xe[bp]
+0247  E8 00 00				call		month_days_
+024A  89 46 FE				mov		word ptr -0x2[bp],ax
+
+    col = first_day(year, month);
+024D  8B 56 F4				mov		dx,word ptr -0xc[bp]
+0250  8B 46 F2				mov		ax,word ptr -0xe[bp]
+0253  E8 00 00				call		first_day_
+0256  89 46 FA				mov		word ptr -0x6[bp],ax
+
+    printf("\n%u  %s\nSu Mo Tu We Th Fr Sa\n", year, names[month-1]);
+0259  8B 5E F4				mov		bx,word ptr -0xc[bp]
+025C  D1 E3				shl		bx,0x01
+025E  FF B7 FE FF			push		word ptr _names-0x2[bx]
+0262  8B 46 F2				mov		ax,word ptr -0xe[bp]
+0265  50				push		ax
+0266  B8 7B 00				mov		ax,offset DGROUP:L$75
+0269  50				push		ax
+026A  E8 00 00				call		printf_
+026D  83 C4 06				add		sp,0x0006
+
+    for (i = 0; i < col; ++i) printf("   ");
+0270  C7 46 FC 00 00			mov		word ptr -0x4[bp],0x0000
+0275				L$45:
+0275  8B 46 FC				mov		ax,word ptr -0x4[bp]
+0278  3B 46 FA				cmp		ax,word ptr -0x6[bp]
+027B  73 0F				jae		L$46
+027D  B8 99 00				mov		ax,offset DGROUP:L$76
+0280  50				push		ax
+0281  E8 00 00				call		printf_
+0284  83 C4 02				add		sp,0x0002
+0287  FF 46 FC				inc		word ptr -0x4[bp]
+028A  EB E9				jmp		L$45
+
+    for (day = 1; day <= days; ++day) {
+028C				L$46:
+028C  C7 46 F8 01 00			mov		word ptr -0x8[bp],0x0001
+0291				L$47:
+0291  8B 46 F8				mov		ax,word ptr -0x8[bp]
+0294  3B 46 FE				cmp		ax,word ptr -0x2[bp]
+0297  77 3F				ja		L$54
+
+        printf("%2u", day);
+0299				L$48:
+0299  8B 46 F8				mov		ax,word ptr -0x8[bp]
+029C  50				push		ax
+029D  B8 9D 00				mov		ax,offset DGROUP:L$77
+02A0  50				push		ax
+02A1  E8 00 00				call		printf_
+02A4  83 C4 04				add		sp,0x0004
+
+        ++col;
+02A7  FF 46 FA				inc		word ptr -0x6[bp]
+
+        if (col == 7) {
+02AA  83 7E FA 07			cmp		word ptr -0x6[bp],0x0007
+02AE  75 0D				jne		L$51
+
+            putchar('\n');
+02B0				L$49:
+02B0  B8 0A 00				mov		ax,0x000a
+02B3  E8 00 00				call		putchar_
+
+            col = 0;
+02B6  C7 46 FA 00 00			mov		word ptr -0x6[bp],0x0000
+
+        } else if (day == days) putchar('\n');
+02BB				L$50:
+02BB  EB 16				jmp		L$53
+02BD				L$51:
+02BD  8B 46 F8				mov		ax,word ptr -0x8[bp]
+02C0  3B 46 FE				cmp		ax,word ptr -0x2[bp]
+02C3  75 08				jne		L$52
+02C5  B8 0A 00				mov		ax,0x000a
+02C8  E8 00 00				call		putchar_
+
+        else putchar(' ');
+02CB  EB 06				jmp		L$53
+02CD				L$52:
+02CD  B8 20 00				mov		ax,0x0020
+02D0  E8 00 00				call		putchar_
+
+    }
+02D3				L$53:
+02D3  FF 46 F8				inc		word ptr -0x8[bp]
+02D6  EB B9				jmp		L$47
+
+}
+02D8				L$54:
+02D8  89 EC				mov		sp,bp
+02DA  5D				pop		bp
+02DB  5F				pop		di
+02DC  5E				pop		si
+02DD  59				pop		cx
+02DE  5B				pop		bx
+02DF  C3				ret		
+
+
+int main(void)
+
+Routine Size: 176 bytes,    Routine Base: _TEXT + 0230
+
+02E0				main_:
+02E0  53				push		bx
+02E1  51				push		cx
+02E2  52				push		dx
+02E3  56				push		si
+02E4  57				push		di
+02E5  55				push		bp
+02E6  89 E5				mov		bp,sp
+02E8  81 EC 06 00			sub		sp,0x0006
+
+{
+    unsigned int year, month;
+    year = read_number("Please input year (1900-2099): ",1900,2099,4);
+02EC				L$55:
+02EC  B9 04 00				mov		cx,0x0004
+02EF  BB 33 08				mov		bx,0x0833
+02F2  BA 6C 07				mov		dx,0x076c
+02F5  B8 A1 00				mov		ax,offset DGROUP:L$78
+02F8  E8 00 00				call		read_number_
+02FB  89 46 FC				mov		word ptr -0x4[bp],ax
+
+    if (!year) return 1;
+02FE  83 7E FC 00			cmp		word ptr -0x4[bp],0x0000
+0302  75 07				jne		L$56
+0304  C7 46 FA 01 00			mov		word ptr -0x6[bp],0x0001
+0309  EB 2D				jmp		L$58
+
+    month = read_number("Please input month (1-12): ",1,12,2);
+030B				L$56:
+030B  B9 02 00				mov		cx,0x0002
+030E  BB 0C 00				mov		bx,0x000c
+0311  BA 01 00				mov		dx,0x0001
+0314  B8 C1 00				mov		ax,offset DGROUP:L$79
+0317  E8 00 00				call		read_number_
+031A  89 46 FE				mov		word ptr -0x2[bp],ax
+
+    if (!month) return 1;
+031D  83 7E FE 00			cmp		word ptr -0x2[bp],0x0000
+0321  75 07				jne		L$57
+0323  C7 46 FA 01 00			mov		word ptr -0x6[bp],0x0001
+0328  EB 0E				jmp		L$58
+
+    print_calendar(year, month);
+032A				L$57:
+032A  8B 56 FE				mov		dx,word ptr -0x2[bp]
+032D  8B 46 FC				mov		ax,word ptr -0x4[bp]
+0330  E8 00 00				call		print_calendar_
+
+    return 0;
+0333  C7 46 FA 00 00			mov		word ptr -0x6[bp],0x0000
+
+}
+0338				L$58:
+0338  8B 46 FA				mov		ax,word ptr -0x6[bp]
+033B				L$59:
+033B  89 EC				mov		sp,bp
+033D  5D				pop		bp
+033E  5F				pop		di
+033F  5E				pop		si
+0340  5A				pop		dx
+0341  59				pop		cx
+0342  5B				pop		bx
+0343  C3				ret		
+0344				L$60:
+
+Routine Size: 100 bytes,    Routine Base: _TEXT + 02E0
+
+No disassembly errors
+
+Segment: CONST WORD USE16 000000DD bytes
+0000				L$61:
+0000  4A 61 6E 75 61 72 79 00                         January.
+0008				L$62:
+0008  46 65 62 72 75 61 72 79 00                      February.
+0011				L$63:
+0011  4D 61 72 63 68 00                               March.
+0017				L$64:
+0017  41 70 72 69 6C 00                               April.
+001D				L$65:
+001D  4D 61 79 00                                     May.
+0021				L$66:
+0021  4A 75 6E 65 00                                  June.
+0026				L$67:
+0026  4A 75 6C 79 00                                  July.
+002B				L$68:
+002B  41 75 67 75 73 74 00                            August.
+0032				L$69:
+0032  53 65 70 74 65 6D 62 65 72 00                   September.
+003C				L$70:
+003C  4F 63 74 6F 62 65 72 00                         October.
+0044				L$71:
+0044  4E 6F 76 65 6D 62 65 72 00                      November.
+004D				L$72:
+004D  44 65 63 65 6D 62 65 72 00                      December.
+0056				L$73:
+0056  25 73 00                                        %s.
+0059				L$74:
+0059  49 6E 76 61 6C 69 64 20 69 6E 70 75 74 2E 20 50 Invalid input. P
+0069  6C 65 61 73 65 20 74 72 79 20 61 67 61 69 6E 2E lease try again.
+0079  0A 00                                           ..
+007B				L$75:
+007B  0A 25 75 20 20 25 73 0A 53 75 20 4D 6F 20 54 75 .%u  %s.Su Mo Tu
+008B  20 57 65 20 54 68 20 46 72 20 53 61 0A 00        We Th Fr Sa..
+0099				L$76:
+0099  20 20 20 00                                        .
+009D				L$77:
+009D  25 32 75 00                                     %2u.
+00A1				L$78:
+00A1  50 6C 65 61 73 65 20 69 6E 70 75 74 20 79 65 61 Please input yea
+00B1  72 20 28 31 39 30 30 2D 32 30 39 39 29 3A 20 00 r (1900-2099): .
+00C1				L$79:
+00C1  50 6C 65 61 73 65 20 69 6E 70 75 74 20 6D 6F 6E Please input mon
+00D1  74 68 20 28 31 2D 31 32 29 3A 20 00             th (1-12): .
+
+Segment: CONST2 WORD USE16 00000018 bytes
+0000				_lengths:
+0000  1F 00 1C 00 1F 00 1E 00 1F 00 1E 00 1F 00 1F 00 ................
+0010  1E 00 1F 00 1E 00 1F 00                         ........
+
+Segment: _DATA WORD USE16 00000018 bytes
+0000				_names:
+0000  00 00                                           DW	offset DGROUP:L$61
+0002  08 00                                           DW	offset DGROUP:L$62
+0004  11 00                                           DW	offset DGROUP:L$63
+0006  17 00                                           DW	offset DGROUP:L$64
+0008  1D 00                                           DW	offset DGROUP:L$65
+000A  21 00                                           DW	offset DGROUP:L$66
+000C  26 00                                           DW	offset DGROUP:L$67
+000E  2B 00                                           DW	offset DGROUP:L$68
+0010  32 00                                           DW	offset DGROUP:L$69
+0012  3C 00                                           DW	offset DGROUP:L$70
+0014  44 00                                           DW	offset DGROUP:L$71
+0016  4D 00                                           DW	offset DGROUP:L$72
+
+Segment: .debug_info BYTE USE32 00000491 bytes
+0000				L$80:
+0000  8D 04 00 00 02 00                               ......
+0006  00 00 00 00                                     DD	offset L$82
+000A  02 06 90 04 00 00 44 3A 5C 48 6F 6D 65 77 6F 72 ......D:\Homewor
+001A  6B 5C 36 5C 48 55 49 5C 64 6F 73 5C 77 6F 72 6B k\6\HUI\dos\work
+002A  5C 48 36 43 41 4C 2E 43 00                      \H6CAL.C.
+0033  00 00 00 00                                     DD	offset L$81
+0037  01 00 56 31 2E 30 20 57 41 54 43 4F 4D 00 00    ..V1.0 WATCOM..
+0046  00 00 00 00                                     DD	offset L$83
+004A  00 00 00 00 02                                  .....
+004F  04 00 00 00                                     DD	offset L$84
+0053  09 63 68 61 72 00 08 01 09 73 69 67 6E 65 64 20 .char....signed 
+0063  63 68 61 72 00 06 01 09 75 6E 73 69 67 6E 65 64 char....unsigned
+0073  20 63 68 61 72 00 08 01 09 73 68 6F 72 74 00 05  char....short..
+0083  02 09 75 6E 73 69 67 6E 65 64 20 73 68 6F 72 74 ..unsigned short
+0093  00 07 02 09 69 6E 74 00 05 02 09 75 6E 73 69 67 ....int....unsig
+00A3  6E 65 64 20 69 6E 74 00 07 02 09 6C 6F 6E 67 00 ned int....long.
+00B3  05 04 09 75 6E 73 69 67 6E 65 64 20 6C 6F 6E 67 ...unsigned long
+00C3  00 07 04 09 5F 5F 69 6E 74 36 34 00 05 08 09 75 ....__int64....u
+00D3  6E 73 69 67 6E 65 64 20 5F 5F 69 6E 74 36 34 00 nsigned __int64.
+00E3  07 08 09 5F 42 6F 6F 6C 00 07 01 18 0C 9D 00 00 ..._Bool........
+00F3  00 D3 01 01 03 0A                               ......
+00F9  00 00                                           DW	seg _lengths
+00FB  00 00 6C 65 6E 67 74 68 73 00 03 03             ..lengths...
+0107  00 00                                           DW	offset _lengths
+0109  EE 00 00 00 10 01 53 00 00 00 18 0C 0D 01 00 00 ......S.........
+0119  D3 01 01 03 0A                                  .....
+011E  00 00                                           DW	seg _names
+0120  00 00 6E 61 6D 65 73 00 03 03                   ..names...
+012A  00 00                                           DW	offset _names
+012C  13 01 00 00 88 01 87 01 00 00 01 9D 00 00 00 0C ................
+013C  03 0A                                           ..
+013E  00 00                                           DW	seg is_leap_
+0140  69 73 5F 6C 65 61 70 00 01 00 01 01 00 00 02 91 is_leap.........
+0150  0C                                              .
+0151  00 00                                           DW	offset is_leap_
+0153  56 00                                           DW	offset month_days_
+0155  00 02 90 21 C8 01 79 65 61 72 00 02 91 7A 01 6B ...!..year...z.k
+0165  9D 00 00 00 D2 01 01 00 01 2E 72 65 74 75 72 6E ..........return
+0175  00 01 6B 9D 00 00 00 66 86 01 00 00             ..k....f....
+0181  0C 00                                           DW	offset L$1
+0183  4D 00                                           DW	offset L$6
+0185  00 00 88 01 F2 01 00 00 01 9D 00 00 00 0B 03 0A ................
+0195  00 00                                           DW	seg month_days_
+0197  6D 6F 6E 74 68 5F 64 61 79 73 00 01 00 01 01 00 month_days......
+01A7  00 02 91 0A                                     ....
+01AB  56 00                                           DW	offset month_days_
+01AD  9F 00                                           DW	offset first_day_
+01AF  00 02 90 21 C8 01 79 65 61 72 00 02 91 78 01 6B ...!..year...x.k
+01BF  9D 00 00 00 C8 01 6D 6F 6E 74 68 00 02 91 7A 01 ......month...z.
+01CF  6E 9D 00 00 00 D2 01 01 00 01 2E 72 65 74 75 72 n..........retur
+01DF  6E 00 01 6B 9D 00 00 00 66 F1 01 00 00          n..k....f....
+01EC  61 00                                           DW	offset L$7
+01EE  97 00                                           DW	offset L$12
+01F0  00 00 88 01 8C 02 00 00 01 9D 00 00 00 0B 03 0A ................
+0200  00 00                                           DW	seg first_day_
+0202  66 69 72 73 74 5F 64 61 79 00 01 00 01 01 00 00 first_day.......
+0212  02 91 0A                                        ...
+0215  9F 00                                           DW	offset first_day_
+0217  1E 01                                           DW	offset read_number_
+0219  00 02 90 21 C8 01 79 65 61 72 00 02 91 74 01 6B ...!..year...t.k
+0229  9D 00 00 00 C8 01 6D 6F 6E 74 68 00 02 91 76 01 ......month...v.
+0239  6E 9D 00 00 00 D2 01 01 00 01 2E 72 65 74 75 72 n..........retur
+0249  6E 00 01 6B 9D 00 00 00 66 8B 02 00 00          n..k....f....
+0256  AA 00                                           DW	offset L$13
+0258  16 01                                           DW	offset L$18
+025A  D2 01 01 00 00 79 00 02 91 7A 9D 00 00 00 D2 01 .....y...z......
+026A  01 00 00 6D 00 02 91 7C 9D 00 00 00 D2 01 01 00 ...m...|........
+027A  00 77 65 65 6B 64 61 79 00 02 91 7E 9D 00 00 00 .weekday...~....
+028A  00 00 88 01 71 03 00 00 01 9D 00 00 00 09 03 0A ....q...........
+029A  00 00                                           DW	seg read_number_
+029C  72 65 61 64 5F 6E 75 6D 62 65 72 00 01 00 01 01 read_number.....
+02AC  00 00 02 91 06                                  .....
+02B1  1E 01                                           DW	offset read_number_
+02B3  30 02                                           DW	offset print_calendar_
+02B5  00 02 90 21 C8 01 70 72 6F 6D 70 74 00 02 91 6E ...!..prompt...n
+02C5  01 6B 0D 01 00 00 C8 01 6C 6F 77 00 02 91 70 01 .k......low...p.
+02D5  6E 9D 00 00 00 C8 01 68 69 67 68 00 02 91 72 01 n......high...r.
+02E5  6C 9D 00 00 00 C8 01 64 69 67 69 74 73 00 02 91 l......digits...
+02F5  74 01 6D 9D 00 00 00 D2 01 01 00 01 2E 72 65 74 t.m..........ret
+0305  75 72 6E 00 01 6B 9D 00 00 00 66 70 03 00 00    urn..k....fp...
+0314  27 01                                           DW	offset L$19
+0316  2A 02                                           DW	offset L$43
+0318  D2 01 01 00 00 76 61 6C 75 65 00 02 91 78 9D 00 .....value...x..
+0328  00 00 D2 01 01 00 00 63 6F 75 6E 74 00 02 91 7A .......count...z
+0338  9D 00 00 00 D2 01 01 00 00 62 61 64 00 02 91 7C .........bad...|
+0348  9D 00 00 00 D2 01 01 00 00 63 68 00 02 91 7E 96 .........ch...~.
+0358  00 00 00 66 6F 03 00 00                         ...fo...
+0360  33 01                                           DW	offset L$20
+0362  24 02                                           DW	offset L$41
+0364  66 6E 03 00 00                                  fn...
+0369  9B 01                                           DW	offset L$26
+036B  DA 01                                           DW	offset L$32
+036D  00 00 00 00 09 76 6F 69 64 00 07 00 88 01 28 04 .....void.....(.
+037D  00 00 01 71 03 00 00 0B 03 0A                   ...q......
+0387  00 00                                           DW	seg print_calendar_
+0389  70 72 69 6E 74 5F 63 61 6C 65 6E 64 61 72 00 01 print_calendar..
+0399  00 01 01 00 00 02 91 0A                         ........
+03A1  30 02                                           DW	offset print_calendar_
+03A3  E0 02                                           DW	offset main_
+03A5  00 02 90 21 C8 01 79 65 61 72 00 02 91 72 01 6B ...!..year...r.k
+03B5  9D 00 00 00 C8 01 6D 6F 6E 74 68 00 02 91 74 01 ......month...t.
+03C5  6E 9D 00 00 00 66 27 04 00 00                   n....f'...
+03CF  3B 02                                           DW	offset L$44
+03D1  D8 02                                           DW	offset L$54
+03D3  D2 01 01 00 00 64 61 79 00 02 91 78 9D 00 00 00 .....day...x....
+03E3  D2 01 01 00 00 63 6F 6C 00 02 91 7A 9D 00 00 00 .....col...z....
+03F3  D2 01 01 00 00 69 00 02 91 7C 9D 00 00 00 D2 01 .....i...|......
+0403  01 00 00 64 61 79 73 00 02 91 7E 9D 00 00 00 66 ...days...~....f
+0413  26 04 00 00                                     &...
+0417  99 02                                           DW	offset L$48
+0419  D3 02                                           DW	offset L$53
+041B  66 25 04 00 00                                  f%...
+0420  B0 02                                           DW	offset L$49
+0422  BB 02                                           DW	offset L$50
+0424  00 00 00 00 88 01 8F 04 00 00 01 96 00 00 00 0C ................
+0434  03 0A                                           ..
+0436  00 00                                           DW	seg main_
+0438  6D 61 69 6E 00 01 00 01 01 00 00 02 91 0C       main..........
+0446  E0 02                                           DW	offset main_
+0448  44 03                                           DW	offset L$60
+044A  00 02 90 21 D2 01 01 00 01 2E 72 65 74 75 72 6E ...!......return
+045A  00 01 6B 96 00 00 00 66 8E 04 00 00             ..k....f....
+0466  EC 02                                           DW	offset L$55
+0468  3B 03                                           DW	offset L$59
+046A  D2 01 01 00 00 79 65 61 72 00 02 91 7C 9D 00 00 .....year...|...
+047A  00 D2 01 01 00 00 6D 6F 6E 74 68 00 02 91 7E 9D ......month...~.
+048A  00 00 00 00 00 00 00                            .......
+
+Segment: .debug_pubnames BYTE USE32 00000067 bytes
+0000  63 00 00 00 02 00                               c.....
+0006  00 00 00 00                                     DD	offset L$80
+000A  44 03 00 00 30 01 00 00 69 73 5F 6C 65 61 70 00 D...0...is_leap.
+001A  87 01 00 00 6D 6F 6E 74 68 5F 64 61 79 73 00 F2 ....month_days..
+002A  01 00 00 66 69 72 73 74 5F 64 61 79 00 8C 02 00 ...first_day....
+003A  00 72 65 61 64 5F 6E 75 6D 62 65 72 00 79 03 00 .read_number.y..
+004A  00 70 72 69 6E 74 5F 63 61 6C 65 6E 64 61 72 00 .print_calendar.
+005A  28 04 00 00 6D 61 69 6E 00 00 00 00 00          (...main.....
+
+Segment: .debug_aranges BYTE USE32 0000002A bytes
+0000  26 00 00 00 02 00                               &.....
+0006  00 00 00 00                                     DD	offset L$80
+000A  02 02                                           ..
+000C  00 00                                           DW	offset is_leap_
+000E  00 00                                           DW	seg is_leap_
+0010  44 03                                           D.
+0012  00 00                                           DW	offset DGROUP:L$61
+0014  00 00                                           DW	seg DGROUP:L$61
+0016  DD 00                                           ..
+0018  00 00                                           DW	offset DGROUP:_lengths
+001A  00 00                                           DW	seg DGROUP:_lengths
+001C  18 00                                           ..
+001E  00 00                                           DW	offset DGROUP:_names
+0020  00 00                                           DW	seg DGROUP:_names
+0022  18 00 00 00 00 00 00 00                         ........
+
+Segment: .debug_line BYTE USE32 00000090 bytes
+0000				L$81:
+0000  8C 00 00 00 02 00 10 00 00 00 01 00 FF 04 0A 00 ................
+0010  01 01 01 01 00 00 00 00 00 00 00 27 03 44 3A 5C ...........'.D:\
+0020  48 6F 6D 65 77 6F 72 6B 5C 36 5C 48 55 49 5C 64 Homework\6\HUI\d
+0030  6F 73 5C 77 6F 72 6B 5C 48 36 43 41 4C 2E 43 00 os\work\H6CAL.C.
+0040  00 00 00 00 03 02                               ......
+0046  00 00                                           DW	offset is_leap_
+0048  00 03 04                                        ...
+004B  00 00                                           DW	seg is_leap_
+004D  06 05 01 03 08 01 49 F8 3D 51 C0 39 51 20 40 88 ......I.=Q.9Q @.
+005D  40 88 24 39 03 06 5F 44 50 08 3C 2C 18 78 70 18 @.$9.._DP.<,.xp.
+006D  24 B4 34 40 18 31 03 03 4F 3C 3C 68 7C 40 44 18 $.4@.1..O<<h|@D.
+007D  24 24 20 4C 2C 20 2D 03 03 3B 54 40 54 40 30 20 $$ L, -..;T@T@0 
+008D  00 01 01                                        ...
+
+Segment: .debug_loc BYTE USE32 00000000 bytes
+
+Segment: .debug_abbrev BYTE USE32 000000A3 bytes
+0000				L$82:
+0000  06 11 01 01 13 03 08 10 06 13 0F 1B 08 25 08 42 .............%.B
+0010  0F 43 06 35 10 82 41 0B 83 41 06 00 00 09 24 00 .C.5..A..A....$.
+0020  03 08 3E 0B 0B 0B 00 00 18 01 00 37 0F 49 13 00 ..>........7.I..
+0030  00 D3 01 34 00 32 0B 46 0A 3F 0C 34 0C 03 08 02 ...4.2.F.?.4....
+0040  0A 49 13 00 00 10 0F 00 33 0B 49 13 00 00 88 01 .I......3.I.....
+0050  2E 01 01 13 32 0B 49 13 2C 0F 46 0A 03 08 3F 0C ....2.I.,.F...?.
+0060  20 0B 36 0B 27 0C 4C 0B 34 0C 2A 0A 11 01 12 01  .6.'.L.4.*.....
+0070  33 0B 40 0A 00 00 C8 01 05 00 03 08 02 0A 84 41 3.@............A
+0080  0A 49 13 00 00 D2 01 34 00 32 0B 3F 0C 34 0C 03 .I.....4.2.?.4..
+0090  08 02 0A 49 13 00 00 66 0B 01 01 13 11 01 12 01 ...I...f........
+00A0  00 00 00                                        ...
+
+Segment: .debug_macinfo BYTE USE32 00000001 bytes
+0000				L$83:
+0000  00                                              .
+
+Segment: .debug_str BYTE USE32 00000000 bytes
+
+Segment: .WATCOM_references BYTE USE32 00000004 bytes
+0000  00 00 00 00                                     ....
+0004				L$84:
+

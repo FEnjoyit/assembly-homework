@@ -1,0 +1,571 @@
+Microsoft (R) Macro Assembler Version 5.00                  11/13/26 19:17:12
+                                                             Page     1-1
+
+
+				; Calendar, 1900..2099. MASM 5.00, 8086, two co
+				de segments. 
+ 0000				STACKSEG SEGMENT PARA STACK 'STACK' 
+ 0000  0100[			    DW 256 DUP (?) 
+	   ????			
+			 ]	
+				
+ 0200				STACKSEG ENDS 
+ 0000				DATASEG SEGMENT PARA PUBLIC 'DATA' 
+ 0000  0000			    YEAR DW 0 
+ 0002  0000			    MONTH DW 0 
+ 0004  0000			    DAYS DW 0 
+ 0006  0000			    WEEKDAY DW 0 
+ 0008  50 6C 65 61 73 65 20	    YPROMPT DB 'Please input year (1900-2099): 
+				$' 
+       69 6E 70 75 74 20 79	
+       65 61 72 20 28 31 39	
+       30 30 2D 32 30 39 39	
+       29 3A 20 24		
+ 0028  50 6C 65 61 73 65 20	    MPROMPT DB 'Please input month (1-12): $' 
+       69 6E 70 75 74 20 6D	
+       6F 6E 74 68 20 28 31	
+       2D 31 32 29 3A 20 24	
+ 0044  49 6E 76 61 6C 69 64	    BADMSG DB 'Invalid input. Please try again.
+				',13,10,'$' 
+       20 69 6E 70 75 74 2E	
+       20 50 6C 65 61 73 65	
+       20 74 72 79 20 61 67	
+       61 69 6E 2E 0D 0A 24	
+ 0067  53 75 20 4D 6F 20 54	    HEADER DB 'Su Mo Tu We Th Fr Sa',13,10,'$' 
+       75 20 57 65 20 54 68	
+       20 46 72 20 53 61 0D	
+       0A 24			
+ 007E  50 00			    INPUTBUF DB 80,0,80 DUP (0) 
+       0050[			
+	   00			
+			 ]	
+				
+ 00D0  1F 1C 1F 1E 1F 1E 1F	    MONTHLEN DB 31,28,31,30,31,30,31,31,30,31,3
+				0,31 
+       1F 1E 1F 1E 1F		
+ 00DC  00F4 R 00FC R 0105 R	    NAMES DW OFFSET JAN,OFFSET FEB,OFFSET MAR,O
+				FFSET APR 
+       010B R			
+ 00E4  0111 R 0115 R 011A R	          DW OFFSET MAY,OFFSET JUN,OFFSET JUL,O
+				FFSET AUG 
+       011F R			
+ 00EC  0126 R 0130 R 0138 R	          DW OFFSET SEP,OFFSET OCT,OFFSET NOV,O
+				FFSET DECEM 
+       0141 R			
+ 00F4  4A 61 6E 75 61 72 79	    JAN DB 'January$' 
+       24			
+ 00FC  46 65 62 72 75 61 72	    FEB DB 'February$' 
+       79 24			
+Microsoft (R) Macro Assembler Version 5.00                  11/13/26 19:17:12
+                                                             Page     1-2
+
+
+ 0105  4D 61 72 63 68 24	    MAR DB 'March$' 
+ 010B  41 70 72 69 6C 24	    APR DB 'April$' 
+ 0111  4D 61 79 24		    MAY DB 'May$' 
+ 0115  4A 75 6E 65 24		    JUN DB 'June$' 
+ 011A  4A 75 6C 79 24		    JUL DB 'July$' 
+ 011F  41 75 67 75 73 74 24	    AUG DB 'August$' 
+ 0126  53 65 70 74 65 6D 62	    SEP DB 'September$' 
+       65 72 24			
+ 0130  4F 63 74 6F 62 65 72	    OCT DB 'October$' 
+       24			
+ 0138  4E 6F 76 65 6D 62 65	    NOV DB 'November$' 
+       72 24			
+ 0141  44 65 63 65 6D 62 65	    DECEM DB 'December$' 
+       72 24			
+ 014A				DATASEG ENDS 
+				 
+ 0000				MAINSEG SEGMENT PARA PUBLIC 'CODE' 
+				    ASSUME CS:MAINSEG,DS:DATASEG,SS:STACKSEG 
+ 0000				START: 
+ 0000  B8 ---- R		    MOV AX,DATASEG 
+ 0003  8E D8			    MOV DS,AX 
+ 0005				YEAR_AGAIN: 
+ 0005  8D 16 0008 R		    LEA DX,YPROMPT 
+ 0009  B9 0004			    MOV CX,4 
+ 000C  E8 006A R		    CALL READ_NUM 
+ 000F  72 0F			    JC YEAR_BAD 
+ 0011  3D 076C			    CMP AX,1900 
+ 0014  72 0A			    JB YEAR_BAD 
+ 0016  3D 0833			    CMP AX,2099 
+ 0019  77 05			    JA YEAR_BAD 
+ 001B  A3 0000 R		    MOV YEAR,AX 
+ 001E  EB 09			    JMP SHORT MONTH_AGAIN 
+ 0020				YEAR_BAD: 
+ 0020  8D 16 0044 R		    LEA DX,BADMSG 
+ 0024  E8 0166 R		    CALL PRINT_STR 
+ 0027  EB DC			    JMP YEAR_AGAIN 
+ 0029				MONTH_AGAIN: 
+ 0029  8D 16 0028 R		    LEA DX,MPROMPT 
+ 002D  B9 0002			    MOV CX,2 
+ 0030  E8 006A R		    CALL READ_NUM 
+ 0033  72 0F			    JC MONTH_BAD 
+ 0035  3D 0001			    CMP AX,1 
+ 0038  72 0A			    JB MONTH_BAD 
+ 003A  3D 000C			    CMP AX,12 
+ 003D  77 05			    JA MONTH_BAD 
+ 003F  A3 0002 R		    MOV MONTH,AX 
+ 0042  EB 09			    JMP SHORT CALCULATE 
+ 0044				MONTH_BAD: 
+ 0044  8D 16 0044 R		    LEA DX,BADMSG 
+ 0048  E8 0166 R		    CALL PRINT_STR 
+ 004B  EB DC			    JMP MONTH_AGAIN 
+ 004D				CALCULATE: 
+ 004D				DATA_CALL: 
+ 004D  9A 0000 ---- R		    CALL FAR PTR GET_DAYS 
+Microsoft (R) Macro Assembler Version 5.00                  11/13/26 19:17:12
+                                                             Page     1-3
+
+
+ 0052				DATA_RETURN: 
+ 0052  A1 0002 R		    MOV AX,MONTH 
+ 0055  50			    PUSH AX 
+ 0056  A1 0000 R		    MOV AX,YEAR 
+ 0059  50			    PUSH AX 
+ 005A				STACK_CALL: 
+ 005A  9A 0012 ---- R		    CALL FAR PTR FIRST_DAY 
+ 005F				STACK_RETURN: 
+ 005F  A3 0006 R		    MOV WEEKDAY,AX 
+ 0062  E8 00BD R		    CALL PRINT_CAL 
+ 0065  B8 4C00			    MOV AX,4C00H 
+ 0068  CD 21			    INT 21H 
+				 
+				; DS:DX prompt, CX maximum digits; AX result, C
+				F=1 invalid. 
+ 006A				READ_NUM PROC NEAR 
+ 006A  53			    PUSH BX 
+ 006B  51			    PUSH CX 
+ 006C  52			    PUSH DX 
+ 006D  56			    PUSH SI 
+ 006E  57			    PUSH DI 
+ 006F  8B F9			    MOV DI,CX 
+ 0071  E8 0166 R		    CALL PRINT_STR 
+ 0074  C6 06 007F R 00		    MOV BYTE PTR INPUTBUF[1],0 
+ 0079  8D 16 007E R		    LEA DX,INPUTBUF 
+ 007D  B4 0A			    MOV AH,0AH 
+ 007F  CD 21			    INT 21H 
+ 0081  E8 016D R		    CALL NEWLINE 
+ 0084  33 C9			    XOR CX,CX 
+ 0086  8A 0E 007F R		    MOV CL,INPUTBUF[1] 
+ 008A  E3 2A			    JCXZ READ_BAD 
+ 008C  3B CF			    CMP CX,DI 
+ 008E  77 26			    JA READ_BAD 
+ 0090  8D 36 0080 R		    LEA SI,INPUTBUF[2] 
+ 0094  33 C0			    XOR AX,AX 
+ 0096  BB 000A			    MOV BX,10 
+ 0099				READ_DIGIT: 
+ 0099  8A 14			    MOV DL,[SI] 
+ 009B  80 FA 30			    CMP DL,'0' 
+ 009E  72 16			    JB READ_BAD 
+ 00A0  80 FA 39			    CMP DL,'9' 
+ 00A3  77 11			    JA READ_BAD 
+ 00A5  80 EA 30			    SUB DL,'0' 
+ 00A8  32 F6			    XOR DH,DH 
+ 00AA  8B FA			    MOV DI,DX 
+ 00AC  F7 E3			    MUL BX 
+ 00AE  03 C7			    ADD AX,DI 
+ 00B0  46			    INC SI 
+ 00B1  E2 E6			    LOOP READ_DIGIT 
+ 00B3  F8			    CLC 
+ 00B4  EB 01			    JMP SHORT READ_DONE 
+ 00B6				READ_BAD: 
+ 00B6  F9			    STC 
+ 00B7				READ_DONE: 
+Microsoft (R) Macro Assembler Version 5.00                  11/13/26 19:17:12
+                                                             Page     1-4
+
+
+ 00B7  5F			    POP DI 
+ 00B8  5E			    POP SI 
+ 00B9  5A			    POP DX 
+ 00BA  59			    POP CX 
+ 00BB  5B			    POP BX 
+ 00BC  C3			    RET 
+ 00BD				READ_NUM ENDP 
+				 
+				; Reads YEAR, MONTH, DAYS, WEEKDAY from the dat
+				a segment. 
+ 00BD				PRINT_CAL PROC NEAR 
+ 00BD  50			    PUSH AX 
+ 00BE  53			    PUSH BX 
+ 00BF  51			    PUSH CX 
+ 00C0  52			    PUSH DX 
+ 00C1  56			    PUSH SI 
+ 00C2  E8 016D R		    CALL NEWLINE 
+ 00C5  A1 0000 R		    MOV AX,YEAR 
+ 00C8  E8 013E R		    CALL PRINT_DEC 
+ 00CB  B2 20			    MOV DL,' ' 
+ 00CD  E8 015F R		    CALL PRINT_CHAR 
+ 00D0  E8 015F R		    CALL PRINT_CHAR 
+ 00D3  8B 1E 0002 R		    MOV BX,MONTH 
+ 00D7  4B			    DEC BX 
+ 00D8  D1 E3			    SHL BX,1 
+ 00DA  8B 97 00DC R		    MOV DX,NAMES[BX] 
+ 00DE  E8 0166 R		    CALL PRINT_STR 
+ 00E1  E8 016D R		    CALL NEWLINE 
+ 00E4  8D 16 0067 R		    LEA DX,HEADER 
+ 00E8  E8 0166 R		    CALL PRINT_STR 
+ 00EB  8B 0E 0006 R		    MOV CX,WEEKDAY 
+ 00EF  E3 0D			    JCXZ DATES_BEGIN 
+ 00F1				LEADING_BLANK: 
+ 00F1  B2 20			    MOV DL,' ' 
+ 00F3  E8 015F R		    CALL PRINT_CHAR 
+ 00F6  E8 015F R		    CALL PRINT_CHAR 
+ 00F9  E8 015F R		    CALL PRINT_CHAR 
+ 00FC  E2 F3			    LOOP LEADING_BLANK 
+ 00FE				DATES_BEGIN: 
+ 00FE  BE 0001			    MOV SI,1 
+ 0101  8B 1E 0006 R		    MOV BX,WEEKDAY 
+ 0105				DATE_LOOP: 
+ 0105  83 FE 0A			    CMP SI,10 
+ 0108  73 05			    JAE TWO_DIGITS 
+ 010A  B2 20			    MOV DL,' ' 
+ 010C  E8 015F R		    CALL PRINT_CHAR 
+ 010F				TWO_DIGITS: 
+ 010F  8B C6			    MOV AX,SI 
+ 0111  E8 013E R		    CALL PRINT_DEC 
+ 0114  43			    INC BX 
+ 0115  83 FB 07			    CMP BX,7 
+ 0118  74 0D			    JE WEEK_END 
+ 011A  3B 36 0004 R		    CMP SI,DAYS 
+ 011E  74 0E			    JE LAST_LINE 
+Microsoft (R) Macro Assembler Version 5.00                  11/13/26 19:17:12
+                                                             Page     1-5
+
+
+ 0120  B2 20			    MOV DL,' ' 
+ 0122  E8 015F R		    CALL PRINT_CHAR 
+ 0125  EB 0A			    JMP SHORT NEXT_DATE 
+ 0127				WEEK_END: 
+ 0127  E8 016D R		    CALL NEWLINE 
+ 012A  33 DB			    XOR BX,BX 
+ 012C  EB 03			    JMP SHORT NEXT_DATE 
+ 012E				LAST_LINE: 
+ 012E  E8 016D R		    CALL NEWLINE 
+ 0131				NEXT_DATE: 
+ 0131  46			    INC SI 
+ 0132  3B 36 0004 R		    CMP SI,DAYS 
+ 0136  76 CD			    JBE DATE_LOOP 
+ 0138  5E			    POP SI 
+ 0139  5A			    POP DX 
+ 013A  59			    POP CX 
+ 013B  5B			    POP BX 
+ 013C  58			    POP AX 
+ 013D  C3			    RET 
+ 013E				PRINT_CAL ENDP 
+				 
+				; Register parameter AX, all general registers 
+				preserved. 
+ 013E				PRINT_DEC PROC NEAR 
+ 013E  50			    PUSH AX 
+ 013F  53			    PUSH BX 
+ 0140  51			    PUSH CX 
+ 0141  52			    PUSH DX 
+ 0142  BB 000A			    MOV BX,10 
+ 0145  33 C9			    XOR CX,CX 
+ 0147				DEC_DIVIDE: 
+ 0147  33 D2			    XOR DX,DX 
+ 0149  F7 F3			    DIV BX 
+ 014B  52			    PUSH DX 
+ 014C  41			    INC CX 
+ 014D  0B C0			    OR AX,AX 
+ 014F  75 F6			    JNZ DEC_DIVIDE 
+ 0151				DEC_WRITE: 
+ 0151  5A			    POP DX 
+ 0152  80 C2 30			    ADD DL,'0' 
+ 0155  E8 015F R		    CALL PRINT_CHAR 
+ 0158  E2 F7			    LOOP DEC_WRITE 
+ 015A  5A			    POP DX 
+ 015B  59			    POP CX 
+ 015C  5B			    POP BX 
+ 015D  58			    POP AX 
+ 015E  C3			    RET 
+ 015F				PRINT_DEC ENDP 
+ 015F				PRINT_CHAR PROC NEAR 
+ 015F  50			    PUSH AX 
+ 0160  B4 02			    MOV AH,02H 
+ 0162  CD 21			    INT 21H 
+ 0164  58			    POP AX 
+ 0165  C3			    RET 
+Microsoft (R) Macro Assembler Version 5.00                  11/13/26 19:17:12
+                                                             Page     1-6
+
+
+ 0166				PRINT_CHAR ENDP 
+ 0166				PRINT_STR PROC NEAR 
+ 0166  50			    PUSH AX 
+ 0167  B4 09			    MOV AH,09H 
+ 0169  CD 21			    INT 21H 
+ 016B  58			    POP AX 
+ 016C  C3			    RET 
+ 016D				PRINT_STR ENDP 
+ 016D				NEWLINE PROC NEAR 
+ 016D  52			    PUSH DX 
+ 016E  B2 0D			    MOV DL,13 
+ 0170  E8 015F R		    CALL PRINT_CHAR 
+ 0173  B2 0A			    MOV DL,10 
+ 0175  E8 015F R		    CALL PRINT_CHAR 
+ 0178  5A			    POP DX 
+ 0179  C3			    RET 
+ 017A				NEWLINE ENDP 
+ 017A				MAINSEG ENDS 
+				 
+ 0000				CALCSEG SEGMENT PARA PUBLIC 'CODE' 
+				    ASSUME CS:CALCSEG,DS:DATASEG,SS:STACKSEG 
+				; Data-segment parameters and result; DS must a
+				lready address DATASEG. 
+ 0000				GET_DAYS PROC FAR 
+ 0000  50			    PUSH AX 
+ 0001  53			    PUSH BX 
+ 0002  A1 0000 R		    MOV AX,YEAR 
+ 0005  8B 1E 0002 R		    MOV BX,MONTH 
+ 0009  E8 005F R		    CALL MONTH_DAYS 
+ 000C  A3 0004 R		    MOV DAYS,AX 
+ 000F  5B			    POP BX 
+ 0010  58			    POP AX 
+ 0011				GET_DAYS_RET: 
+ 0011  CB			    RET 
+ 0012				GET_DAYS ENDP 
+				 
+				; Stack parameters: caller pushes month, then y
+				ear. 
+				; After PUSH BP: [BP+2] return IP, [BP+4] retur
+				n CS, 
+				; [BP+6] year, [BP+8] month. Return weekday in 
+				AX (Sunday=0). 
+ 0012				FIRST_DAY PROC FAR 
+ 0012  55			    PUSH BP 
+ 0013  8B EC			    MOV BP,SP 
+ 0015  53			    PUSH BX 
+ 0016  51			    PUSH CX 
+ 0017  52			    PUSH DX 
+ 0018  56			    PUSH SI 
+ 0019  57			    PUSH DI 
+ 001A  BE 076C			    MOV SI,1900 
+ 001D  BF 0001			    MOV DI,1 
+ 0020				YEAR_LOOP: 
+ 0020  3B 76 06			    CMP SI,[BP+6] 
+Microsoft (R) Macro Assembler Version 5.00                  11/13/26 19:17:12
+                                                             Page     1-7
+
+
+ 0023  73 13			    JAE YEARS_DONE 
+ 0025  8B C6			    MOV AX,SI 
+ 0027  E8 007A R		    CALL IS_LEAP 
+ 002A  03 F8			    ADD DI,AX 
+ 002C  47			    INC DI 
+ 002D  83 FF 07			    CMP DI,7 
+ 0030  72 03			    JB YEAR_REDUCED 
+ 0032  83 EF 07			    SUB DI,7 
+ 0035				YEAR_REDUCED: 
+ 0035  46			    INC SI 
+ 0036  EB E8			    JMP SHORT YEAR_LOOP 
+ 0038				YEARS_DONE: 
+ 0038  BB 0001			    MOV BX,1 
+ 003B				MONTH_LOOP: 
+ 003B  3B 5E 08			    CMP BX,[BP+8] 
+ 003E  73 14			    JAE MONTHS_DONE 
+ 0040  8B 46 06			    MOV AX,[BP+6] 
+ 0043  E8 005F R		    CALL MONTH_DAYS 
+ 0046  03 C7			    ADD AX,DI 
+ 0048  33 D2			    XOR DX,DX 
+ 004A  B9 0007			    MOV CX,7 
+ 004D  F7 F1			    DIV CX 
+ 004F  8B FA			    MOV DI,DX 
+ 0051  43			    INC BX 
+ 0052  EB E7			    JMP SHORT MONTH_LOOP 
+ 0054				MONTHS_DONE: 
+ 0054  8B C7			    MOV AX,DI 
+ 0056  5F			    POP DI 
+ 0057  5E			    POP SI 
+ 0058  5A			    POP DX 
+ 0059  59			    POP CX 
+ 005A  5B			    POP BX 
+ 005B  5D			    POP BP 
+ 005C				FIRST_DAY_RET: 
+ 005C  CA 0004			    RET 4 
+ 005F				FIRST_DAY ENDP 
+				 
+				; Register parameters AX=year, BX=month (1..12)
+				; result AX=days. 
+ 005F				MONTH_DAYS PROC NEAR 
+ 005F  53			    PUSH BX 
+ 0060  52			    PUSH DX 
+ 0061  8B D0			    MOV DX,AX 
+ 0063  4B			    DEC BX 
+ 0064  33 C0			    XOR AX,AX 
+ 0066  8A 87 00D0 R		    MOV AL,MONTHLEN[BX] 
+ 006A  83 FB 01			    CMP BX,1 
+ 006D  75 08			    JNE MD_DONE 
+ 006F  8B C2			    MOV AX,DX 
+ 0071  E8 007A R		    CALL IS_LEAP 
+ 0074  05 001C			    ADD AX,28 
+ 0077				MD_DONE: 
+ 0077  5A			    POP DX 
+ 0078  5B			    POP BX 
+Microsoft (R) Macro Assembler Version 5.00                  11/13/26 19:17:12
+                                                             Page     1-8
+
+
+ 0079  C3			    RET 
+ 007A				MONTH_DAYS ENDP 
+				 
+				; AX year -> AX 0/1. Gregorian rule, including 
+				century years. 
+ 007A				IS_LEAP PROC NEAR 
+ 007A  53			    PUSH BX 
+ 007B  51			    PUSH CX 
+ 007C  52			    PUSH DX 
+ 007D  8B C8			    MOV CX,AX 
+ 007F  33 D2			    XOR DX,DX 
+ 0081  BB 0190			    MOV BX,400 
+ 0084  F7 F3			    DIV BX 
+ 0086  0B D2			    OR DX,DX 
+ 0088  74 1A			    JZ LEAP_YES 
+ 008A  8B C1			    MOV AX,CX 
+ 008C  33 D2			    XOR DX,DX 
+ 008E  BB 0064			    MOV BX,100 
+ 0091  F7 F3			    DIV BX 
+ 0093  0B D2			    OR DX,DX 
+ 0095  74 12			    JZ LEAP_NO 
+ 0097  8B C1			    MOV AX,CX 
+ 0099  33 D2			    XOR DX,DX 
+ 009B  BB 0004			    MOV BX,4 
+ 009E  F7 F3			    DIV BX 
+ 00A0  0B D2			    OR DX,DX 
+ 00A2  75 05			    JNZ LEAP_NO 
+ 00A4				LEAP_YES: 
+ 00A4  B8 0001			    MOV AX,1 
+ 00A7  EB 02			    JMP SHORT LEAP_DONE 
+ 00A9				LEAP_NO: 
+ 00A9  33 C0			    XOR AX,AX 
+ 00AB				LEAP_DONE: 
+ 00AB  5A			    POP DX 
+ 00AC  59			    POP CX 
+ 00AD  5B			    POP BX 
+ 00AE  C3			    RET 
+ 00AF				IS_LEAP ENDP 
+ 00AF				CALCSEG ENDS 
+				END START 
+Microsoft (R) Macro Assembler Version 5.00                  11/13/26 19:17:12
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CALCSEG  . . . . . . . . . . . .  	00AF	PARA	PUBLIC	'CODE'
+DATASEG  . . . . . . . . . . . .  	014A	PARA	PUBLIC	'DATA'
+MAINSEG  . . . . . . . . . . . .  	017A	PARA	PUBLIC	'CODE'
+STACKSEG . . . . . . . . . . . .  	0200	PARA	STACK	'STACK'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+APR  . . . . . . . . . . . . . .  	L BYTE	010B	DATASEG
+AUG  . . . . . . . . . . . . . .  	L BYTE	011F	DATASEG
+
+BADMSG . . . . . . . . . . . . .  	L BYTE	0044	DATASEG
+
+CALCULATE  . . . . . . . . . . .  	L NEAR	004D	MAINSEG
+
+DATA_CALL  . . . . . . . . . . .  	L NEAR	004D	MAINSEG
+DATA_RETURN  . . . . . . . . . .  	L NEAR	0052	MAINSEG
+DATES_BEGIN  . . . . . . . . . .  	L NEAR	00FE	MAINSEG
+DATE_LOOP  . . . . . . . . . . .  	L NEAR	0105	MAINSEG
+DAYS . . . . . . . . . . . . . .  	L WORD	0004	DATASEG
+DECEM  . . . . . . . . . . . . .  	L BYTE	0141	DATASEG
+DEC_DIVIDE . . . . . . . . . . .  	L NEAR	0147	MAINSEG
+DEC_WRITE  . . . . . . . . . . .  	L NEAR	0151	MAINSEG
+
+FEB  . . . . . . . . . . . . . .  	L BYTE	00FC	DATASEG
+FIRST_DAY  . . . . . . . . . . .  	F PROC	0012	CALCSEG	Length = 004D
+FIRST_DAY_RET  . . . . . . . . .  	L NEAR	005C	CALCSEG
+
+GET_DAYS . . . . . . . . . . . .  	F PROC	0000	CALCSEG	Length = 0012
+GET_DAYS_RET . . . . . . . . . .  	L NEAR	0011	CALCSEG
+
+HEADER . . . . . . . . . . . . .  	L BYTE	0067	DATASEG
+
+INPUTBUF . . . . . . . . . . . .  	L BYTE	007E	DATASEG
+IS_LEAP  . . . . . . . . . . . .  	N PROC	007A	CALCSEG	Length = 0035
+
+JAN  . . . . . . . . . . . . . .  	L BYTE	00F4	DATASEG
+JUL  . . . . . . . . . . . . . .  	L BYTE	011A	DATASEG
+JUN  . . . . . . . . . . . . . .  	L BYTE	0115	DATASEG
+
+LAST_LINE  . . . . . . . . . . .  	L NEAR	012E	MAINSEG
+LEADING_BLANK  . . . . . . . . .  	L NEAR	00F1	MAINSEG
+LEAP_DONE  . . . . . . . . . . .  	L NEAR	00AB	CALCSEG
+LEAP_NO  . . . . . . . . . . . .  	L NEAR	00A9	CALCSEG
+LEAP_YES . . . . . . . . . . . .  	L NEAR	00A4	CALCSEG
+
+MAR  . . . . . . . . . . . . . .  	L BYTE	0105	DATASEG
+MAY  . . . . . . . . . . . . . .  	L BYTE	0111	DATASEG
+MD_DONE  . . . . . . . . . . . .  	L NEAR	0077	CALCSEG
+Microsoft (R) Macro Assembler Version 5.00                  11/13/26 19:17:12
+                                                             Symbols-2
+
+
+MONTH  . . . . . . . . . . . . .  	L WORD	0002	DATASEG
+MONTHLEN . . . . . . . . . . . .  	L BYTE	00D0	DATASEG
+MONTHS_DONE  . . . . . . . . . .  	L NEAR	0054	CALCSEG
+MONTH_AGAIN  . . . . . . . . . .  	L NEAR	0029	MAINSEG
+MONTH_BAD  . . . . . . . . . . .  	L NEAR	0044	MAINSEG
+MONTH_DAYS . . . . . . . . . . .  	N PROC	005F	CALCSEG	Length = 001B
+MONTH_LOOP . . . . . . . . . . .  	L NEAR	003B	CALCSEG
+MPROMPT  . . . . . . . . . . . .  	L BYTE	0028	DATASEG
+
+NAMES  . . . . . . . . . . . . .  	L WORD	00DC	DATASEG
+NEWLINE  . . . . . . . . . . . .  	N PROC	016D	MAINSEG	Length = 000D
+NEXT_DATE  . . . . . . . . . . .  	L NEAR	0131	MAINSEG
+NOV  . . . . . . . . . . . . . .  	L BYTE	0138	DATASEG
+
+OCT  . . . . . . . . . . . . . .  	L BYTE	0130	DATASEG
+
+PRINT_CAL  . . . . . . . . . . .  	N PROC	00BD	MAINSEG	Length = 0081
+PRINT_CHAR . . . . . . . . . . .  	N PROC	015F	MAINSEG	Length = 0007
+PRINT_DEC  . . . . . . . . . . .  	N PROC	013E	MAINSEG	Length = 0021
+PRINT_STR  . . . . . . . . . . .  	N PROC	0166	MAINSEG	Length = 0007
+
+READ_BAD . . . . . . . . . . . .  	L NEAR	00B6	MAINSEG
+READ_DIGIT . . . . . . . . . . .  	L NEAR	0099	MAINSEG
+READ_DONE  . . . . . . . . . . .  	L NEAR	00B7	MAINSEG
+READ_NUM . . . . . . . . . . . .  	N PROC	006A	MAINSEG	Length = 0053
+
+SEP  . . . . . . . . . . . . . .  	L BYTE	0126	DATASEG
+STACK_CALL . . . . . . . . . . .  	L NEAR	005A	MAINSEG
+STACK_RETURN . . . . . . . . . .  	L NEAR	005F	MAINSEG
+START  . . . . . . . . . . . . .  	L NEAR	0000	MAINSEG
+
+TWO_DIGITS . . . . . . . . . . .  	L NEAR	010F	MAINSEG
+
+WEEKDAY  . . . . . . . . . . . .  	L WORD	0006	DATASEG
+WEEK_END . . . . . . . . . . . .  	L NEAR	0127	MAINSEG
+
+YEAR . . . . . . . . . . . . . .  	L WORD	0000	DATASEG
+YEARS_DONE . . . . . . . . . . .  	L NEAR	0038	CALCSEG
+YEAR_AGAIN . . . . . . . . . . .  	L NEAR	0005	MAINSEG
+YEAR_BAD . . . . . . . . . . . .  	L NEAR	0020	MAINSEG
+YEAR_LOOP  . . . . . . . . . . .  	L NEAR	0020	CALCSEG
+YEAR_REDUCED . . . . . . . . . .  	L NEAR	0035	CALCSEG
+YPROMPT  . . . . . . . . . . . .  	L BYTE	0008	DATASEG
+
+@FILENAME  . . . . . . . . . . .  	TEXT  H6CAL		
+
+Microsoft (R) Macro Assembler Version 5.00                  11/13/26 19:17:12
+                                                             Symbols-3
+
+
+
+    371 Source  Lines
+    371 Total   Lines
+     75 Symbols
+
+  50934 + 422570 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

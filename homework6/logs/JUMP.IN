@@ -1,0 +1,12 @@
+tm 1
+u cs:0 l10
+g 8
+r
+t
+r
+u cs:ip l5
+t
+r
+u cs:ip l11
+g
+q

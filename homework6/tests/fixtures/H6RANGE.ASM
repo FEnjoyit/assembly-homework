@@ -1,0 +1,13 @@
+; Range exercise: MASM 5.00 must reject the out-of-range 8086 JNE.
+CODESEG SEGMENT
+    ASSUME CS:CODESEG
+START:
+    MOV AX,1
+    CMP AX,0
+    JNE DISTANT
+    DB 160 DUP (90H)
+DISTANT:
+    MOV AX,4C00H
+    INT 21H
+CODESEG ENDS
+END START

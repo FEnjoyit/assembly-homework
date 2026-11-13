@@ -1,0 +1,39 @@
+tm 1
+t
+t
+e ds:0 ea 07 0b 00
+r bx
+1234
+r cx
+5678
+r si
+1357
+r di
+2468
+r bp
+369c
+r ip
+4d
+r
+t
+g 5f
+r
+g 11
+r
+t
+d ds:0 l8
+t
+t
+t
+t
+r
+t
+t
+t
+d ss:bp la
+g 5c
+r
+t
+r
+g
+q

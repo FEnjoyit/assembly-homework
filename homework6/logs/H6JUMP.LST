@@ -1,0 +1,85 @@
+Microsoft (R) Macro Assembler Version 5.00                  11/13/26 19:17:12
+                                                             Page     1-1
+
+
+				; 8086: inverted short condition + near JMP; th
+				en a direct far JMP. 
+ 0000				STK SEGMENT PARA STACK 'STACK' 
+ 0000  0040[			    DW 64 DUP (?) 
+	   ????			
+			 ]	
+				
+ 0080				STK ENDS 
+ 0000				DAT SEGMENT PARA PUBLIC 'DATA' 
+ 0000  4A 75 6D 70 20 4F 4B	    MSG DB 'Jump OK',13,10,'$' 
+       0D 0A 24			
+ 000A				DAT ENDS 
+ 0000				ONE SEGMENT PARA PUBLIC 'CODE' 
+				    ASSUME CS:ONE,SS:STK 
+ 0000				START: 
+ 0000  B8 0001			    MOV AX,1 
+ 0003  3D 0000			    CMP AX,0 
+ 0006  74 03			    JE SHORT SKIP_LONG 
+ 0008				NEAR_JUMP: 
+ 0008  E9 00B0 R		    JMP NEAR PTR DISTANT 
+ 000B				SKIP_LONG: 
+ 000B  B8 4C01			    MOV AX,4C01H 
+ 000E  CD 21			    INT 21H 
+ 0010  00A0[			    DB 160 DUP (90H) 
+	   90			
+			 ]	
+				
+ 00B0				DISTANT: 
+ 00B0  EA 0000 ---- R		    JMP FAR PTR FAR_TARGET 
+ 00B5				ONE ENDS 
+ 0000				TWO SEGMENT PARA PUBLIC 'CODE' 
+				    ASSUME CS:TWO,DS:DAT,SS:STK 
+ 0000				FAR_TARGET: 
+ 0000  B8 ---- R		    MOV AX,DAT 
+ 0003  8E D8			    MOV DS,AX 
+ 0005  8D 16 0000 R		    LEA DX,MSG 
+ 0009  B4 09			    MOV AH,09H 
+ 000B  CD 21			    INT 21H 
+ 000D  B8 4C00			    MOV AX,4C00H 
+ 0010  CD 21			    INT 21H 
+ 0012				TWO ENDS 
+				END START 
+Microsoft (R) Macro Assembler Version 5.00                  11/13/26 19:17:12
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+DAT  . . . . . . . . . . . . . .  	000A	PARA	PUBLIC	'DATA'
+ONE  . . . . . . . . . . . . . .  	00B5	PARA	PUBLIC	'CODE'
+STK  . . . . . . . . . . . . . .  	0080	PARA	STACK	'STACK'
+TWO  . . . . . . . . . . . . . .  	0012	PARA	PUBLIC	'CODE'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+DISTANT  . . . . . . . . . . . .  	L NEAR	00B0	ONE
+
+FAR_TARGET . . . . . . . . . . .  	L NEAR	0000	TWO
+
+MSG  . . . . . . . . . . . . . .  	L BYTE	0000	DAT
+
+NEAR_JUMP  . . . . . . . . . . .  	L NEAR	0008	ONE
+
+SKIP_LONG  . . . . . . . . . . .  	L NEAR	000B	ONE
+START  . . . . . . . . . . . . .  	L NEAR	0000	ONE
+
+@FILENAME  . . . . . . . . . . .  	TEXT  H6JUMP		
+
+
+     34 Source  Lines
+     34 Total   Lines
+     15 Symbols
+
+  51070 + 438818 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

@@ -9,6 +9,7 @@
 | [作业3](homework3/) | 求和：寄存器、数据段、栈保存结果，输入1～100及 C 反汇编 | [Markdown](homework3/作业3_求和.md) | [src](homework3/src/) | [bin](homework3/bin/) |
 | [作业4](homework4/) | 九九乘法表、过程调用、9×9 数据纠错及 C 反汇编 | [Markdown](homework4/作业4_乘法指令和过程调用.md) | [src](homework4/src/) | [bin](homework4/bin/) |
 | [作业5](homework5/) | 递归求斐波那契数，支持 1～100、栈跟踪及 C 反汇编 | [Markdown](homework5/作业5_递归调用.md) | [src](homework5/src/) | [bin](homework5/bin/) |
+| [作业6](homework6/) | 月历：1900～2099、三种传参、双代码段、远调用与跳转及 C 反汇编 | [Markdown](homework6/作业6_输出日历.md) | [src](homework6/src/) | [bin](homework6/bin/) |
 | [课堂练习1](classwork1/) | 进制转换：1至2位十六进制转十进制，追加十进制转十六进制 | [Markdown](classwork1/课堂练习1_进制转换.md) | [src](classwork1/src/) | [bin](classwork1/bin/) |
 
 ## 运行环境
@@ -65,6 +66,14 @@ homework5/          第五次作业：递归调用
   output/          运行示例
   作业5_递归调用.md
   C反汇编_逐行注释.md
+homework6/          第六次作业：输出日历
+  src/             汇编月历、C 月历、跳转练习和编译批处理
+  bin/             三份 DOS EXE
+  logs/            编译、跨段调用、跳转及全部月份检查记录
+  output/          月历和输入重试示例
+  tests/           验证脚本与短跳转范围练习
+  作业6_输出日历.md
+  C反汇编_注释.md
 classwork1/         课堂练习1，独立编号
   src/             两份 ASM 和编译批处理
   bin/             两份 DOS EXE
@@ -84,6 +93,7 @@ environment/       共用环境说明
 - 作业3：[155/155 项通过](homework3/验证结果.json)，四个固定版本均输出5050，122个输入用例全部通过，并核对三种累计位置与栈恢复。
 - 作业4：[271/271 项通过](homework4/验证结果.json)，乘法表输出45项，三种纠错实现均正确定位5处错误，并通过81个位置的逐格验证。
 - 作业5：[255/255 项通过](homework5/验证结果.json)，两种递归实现覆盖全部 1～100，记录 18 次调用和返回及最大输入的栈峰值。
+- 作业6：[4856/4856 项通过](homework6/验证结果.json)，两种实现覆盖全部 2400 个月份，并检查输入重试、三种传参、远调用返回和跳转范围。
 - 课堂练习1：[795/795 项通过](classwork1/验证结果.json)，787个输入用例通过，覆盖全部 `00～FF` 数值、十进制边界和非法输入重试。
 
 运行和反汇编记录保留在各作业的 `logs` 中，包含对应源码和 EXE 的校验值。

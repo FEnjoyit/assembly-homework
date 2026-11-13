@@ -1,0 +1,51 @@
+Microsoft (R) Macro Assembler Version 5.00                  11/13/26 19:17:12
+                                                             Page     1-1
+
+
+				; Range exercise: MASM 5.00 must reject the out
+				-of-range 8086 JNE. 
+ 0000				CODESEG SEGMENT 
+				    ASSUME CS:CODESEG 
+ 0000				START: 
+ 0000  B8 0001			    MOV AX,1 
+ 0003  3D 0000			    CMP AX,0 
+ 0006  75 A8			    JNE DISTANT 
+H6RANGE.ASM(7): error A2053: Jump out of range by 33 byte(s)
+ 0008  00A0[			    DB 160 DUP (90H) 
+	   90			
+			 ]	
+				
+ 00A8				DISTANT: 
+ 00A8  B8 4C00			    MOV AX,4C00H 
+ 00AB  CD 21			    INT 21H 
+ 00AD				CODESEG ENDS 
+				END START 
+Microsoft (R) Macro Assembler Version 5.00                  11/13/26 19:17:12
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODESEG  . . . . . . . . . . . .  	00AD	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+DISTANT  . . . . . . . . . . . .  	L NEAR	00A8	CODESEG
+
+START  . . . . . . . . . . . . .  	L NEAR	0000	CODESEG
+
+@FILENAME  . . . . . . . . . . .  	TEXT  H6RANGE		
+
+
+     13 Source  Lines
+     13 Total   Lines
+      5 Symbols
+
+  51114 + 438774 Bytes symbol space free
+
+      0 Warning Errors
+      1 Severe  Errors

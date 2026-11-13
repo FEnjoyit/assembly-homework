@@ -1,0 +1,154 @@
+-tm 1
+trace mode is 1 - INTs are traced
+-u cs:0 l6a
+0E35:0000 B8200E            MOV     AX,0E20
+0E35:0003 8ED8              MOV     DS,AX
+0E35:0005 8D160800          LEA     DX,[0008]
+0E35:0009 B90400            MOV     CX,0004
+0E35:000C E85B00            CALL    006A
+0E35:000F 720F              JB      0020
+0E35:0011 3D6C07            CMP     AX,076C
+0E35:0014 720A              JB      0020
+0E35:0016 3D3308            CMP     AX,0833
+0E35:0019 7705              JA      0020
+0E35:001B A30000            MOV     [0000],AX
+0E35:001E EB09              JMP     0029
+0E35:0020 8D164400          LEA     DX,[0044]
+0E35:0024 E83F01            CALL    0166
+0E35:0027 EBDC              JMP     0005
+0E35:0029 8D162800          LEA     DX,[0028]
+0E35:002D B90200            MOV     CX,0002
+0E35:0030 E83700            CALL    006A
+0E35:0033 720F              JB      0044
+0E35:0035 3D0100            CMP     AX,0001
+0E35:0038 720A              JB      0044
+0E35:003A 3D0C00            CMP     AX,000C
+0E35:003D 7705              JA      0044
+0E35:003F A30200            MOV     [0002],AX
+0E35:0042 EB09              JMP     004D
+0E35:0044 8D164400          LEA     DX,[0044]
+0E35:0048 E81B01            CALL    0166
+0E35:004B EBDC              JMP     0029
+0E35:004D 9A00004D0E        CALL    0E4D:0000
+0E35:0052 A10200            MOV     AX,[0002]
+0E35:0055 50                PUSH    AX
+0E35:0056 A10000            MOV     AX,[0000]
+0E35:0059 50                PUSH    AX
+0E35:005A 9A12004D0E        CALL    0E4D:0012
+0E35:005F A30600            MOV     [0006],AX
+0E35:0062 E85800            CALL    00BD
+0E35:0065 B8004C            MOV     AX,4C00
+0E35:0068 CD21              INT     21
+-t
+AX=0E20 BX=0000 CX=057F DX=0000 SP=0200 BP=0000 SI=0000 DI=0000 
+DS=0DF0 ES=0DF0 SS=0E00 CS=0E35 IP=0003 NV UP EI PL ZR NA PE NC 
+0E35:0003 8ED8              MOV     DS,AX
+-t
+AX=0E20 BX=0000 CX=057F DX=0000 SP=0200 BP=0000 SI=0000 DI=0000 
+DS=0E20 ES=0DF0 SS=0E00 CS=0E35 IP=0005 NV UP EI PL ZR NA PE NC 
+0E35:0005 8D160800          LEA     DX,[0008]
+-e ds:0 ea 07 0b 00
+-r ip
+IP 0005  :4d
+-t
+AX=0E20 BX=0000 CX=057F DX=0000 SP=01FC BP=0000 SI=0000 DI=0000 
+DS=0E20 ES=0DF0 SS=0E00 CS=0E4D IP=0000 NV UP EI PL ZR NA PE NC 
+0E4D:0000 50                PUSH    AX
+-u cs:0 l7a
+0E4D:0000 50                PUSH    AX
+0E4D:0001 53                PUSH    BX
+0E4D:0002 A10000            MOV     AX,[0000]
+0E4D:0005 8B1E0200          MOV     BX,[0002]
+0E4D:0009 E85300            CALL    005F
+0E4D:000C A30400            MOV     [0004],AX
+0E4D:000F 5B                POP     BX
+0E4D:0010 58                POP     AX
+0E4D:0011 CB                RETF
+0E4D:0012 55                PUSH    BP
+0E4D:0013 8BEC              MOV     BP,SP
+0E4D:0015 53                PUSH    BX
+0E4D:0016 51                PUSH    CX
+0E4D:0017 52                PUSH    DX
+0E4D:0018 56                PUSH    SI
+0E4D:0019 57                PUSH    DI
+0E4D:001A BE6C07            MOV     SI,076C
+0E4D:001D BF0100            MOV     DI,0001
+0E4D:0020 3B7606            CMP     SI,[BP+06]
+0E4D:0023 7313              JAE     0038
+0E4D:0025 8BC6              MOV     AX,SI
+0E4D:0027 E85000            CALL    007A
+0E4D:002A 03F8              ADD     DI,AX
+0E4D:002C 47                INC     DI
+0E4D:002D 83FF07            CMP     DI,+07
+0E4D:0030 7203              JB      0035
+0E4D:0032 83EF07            SUB     DI,+07
+0E4D:0035 46                INC     SI
+0E4D:0036 EBE8              JMP     0020
+0E4D:0038 BB0100            MOV     BX,0001
+0E4D:003B 3B5E08            CMP     BX,[BP+08]
+0E4D:003E 7314              JAE     0054
+0E4D:0040 8B4606            MOV     AX,[BP+06]
+0E4D:0043 E81900            CALL    005F
+0E4D:0046 03C7              ADD     AX,DI
+0E4D:0048 33D2              XOR     DX,DX
+0E4D:004A B90700            MOV     CX,0007
+0E4D:004D F7F1              DIV     CX
+0E4D:004F 8BFA              MOV     DI,DX
+0E4D:0051 43                INC     BX
+0E4D:0052 EBE7              JMP     003B
+0E4D:0054 8BC7              MOV     AX,DI
+0E4D:0056 5F                POP     DI
+0E4D:0057 5E                POP     SI
+0E4D:0058 5A                POP     DX
+0E4D:0059 59                POP     CX
+0E4D:005A 5B                POP     BX
+0E4D:005B 5D                POP     BP
+0E4D:005C CA0400            RETF    0004
+0E4D:005F 53                PUSH    BX
+0E4D:0060 52                PUSH    DX
+0E4D:0061 8BD0              MOV     DX,AX
+0E4D:0063 4B                DEC     BX
+0E4D:0064 33C0              XOR     AX,AX
+0E4D:0066 8A87D000          MOV     AL,[BX+00D0]
+0E4D:006A 83FB01            CMP     BX,+01
+0E4D:006D 7508              JNZ     0077
+0E4D:006F 8BC2              MOV     AX,DX
+0E4D:0071 E80600            CALL    007A
+0E4D:0074 051C00            ADD     AX,001C
+0E4D:0077 5A                POP     DX
+0E4D:0078 5B                POP     BX
+0E4D:0079 C3                RET
+-u cs:7a l3c
+0E4D:007A 53                PUSH    BX
+0E4D:007B 51                PUSH    CX
+0E4D:007C 52                PUSH    DX
+0E4D:007D 8BC8              MOV     CX,AX
+0E4D:007F 33D2              XOR     DX,DX
+0E4D:0081 BB9001            MOV     BX,0190
+0E4D:0084 F7F3              DIV     BX
+0E4D:0086 0BD2              OR      DX,DX
+0E4D:0088 741A              JZ      00A4
+0E4D:008A 8BC1              MOV     AX,CX
+0E4D:008C 33D2              XOR     DX,DX
+0E4D:008E BB6400            MOV     BX,0064
+0E4D:0091 F7F3              DIV     BX
+0E4D:0093 0BD2              OR      DX,DX
+0E4D:0095 7412              JZ      00A9
+0E4D:0097 8BC1              MOV     AX,CX
+0E4D:0099 33D2              XOR     DX,DX
+0E4D:009B BB0400            MOV     BX,0004
+0E4D:009E F7F3              DIV     BX
+0E4D:00A0 0BD2              OR      DX,DX
+0E4D:00A2 7505              JNZ     00A9
+0E4D:00A4 B80100            MOV     AX,0001
+0E4D:00A7 EB02              JMP     00AB
+0E4D:00A9 33C0              XOR     AX,AX
+0E4D:00AB 5A                POP     DX
+0E4D:00AC 59                POP     CX
+0E4D:00AD 5B                POP     BX
+0E4D:00AE C3                RET
+0E4D:00AF 0000              ADD     [BX+SI],AL
+0E4D:00B1 0000              ADD     [BX+SI],AL
+0E4D:00B3 0000              ADD     [BX+SI],AL
+0E4D:00B5 0000              ADD     [BX+SI],AL
+-q

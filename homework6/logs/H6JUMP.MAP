@@ -1,0 +1,8 @@
+
+ Start  Stop   Length Name                   Class
+ 00000H 0007FH 00080H STK                    STACK
+ 00080H 00089H 0000AH DAT                    DATA
+ 00090H 00144H 000B5H ONE                    CODE
+ 00150H 00161H 00012H TWO                    CODE
+
+Program entry point at 0009:0000
